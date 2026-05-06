@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Expense Tracker',
         themeMode: ThemeMode.system,
-        theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+        theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.blue)),
         home: const Splashscreen(),
       ),
     );
