@@ -27,20 +27,9 @@ class UserModel extends Model
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
 
-    // ── Validation ────────────────────────────────────────────────────────
-
-    protected $validationRules = [
-        'email'         => 'required|valid_email|is_unique[users.email]',
-        'password_hash' => 'required|min_length[6]',
-    ];
-
-    protected $validationMessages = [
-        'email' => [
-            'is_unique' => 'This email is already registered.',
-        ],
-    ];
-
     // ── Helpers ───────────────────────────────────────────────────────────
+    // Note: Validation is intentionally handled in AuthController, not here.
+    // Model-level rules were removed to avoid double-validation conflicts.
 
     /**
      * Find a user by email.

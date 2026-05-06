@@ -26,79 +26,49 @@ class Cors extends BaseConfig
      */
     public array $default = [
         /**
-         * Origins for the `Access-Control-Allow-Origin` header.
+         * Allowed origins.
+         * '*' permits any origin — correct for a mobile app REST API.
+         * In production, restrict to your specific domain(s):
+         *   e.g. ['https://yourdomain.com']
          *
-         * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
-         *
-         * E.g.:
-         *   - ['http://localhost:8080']
-         *   - ['https://www.example.com']
+         * NOTE: Cannot be '*' when supportsCredentials is true.
          */
-        'allowedOrigins' => [],
+        'allowedOrigins' => ['*'],
 
         /**
-         * Origin regex patterns for the `Access-Control-Allow-Origin` header.
-         *
-         * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
-         *
-         * NOTE: A pattern specified here is part of a regular expression. It will
-         *       be actually `#\A<pattern>\z#`.
-         *
-         * E.g.:
-         *   - ['https://\w+\.example\.com']
+         * Origin regex patterns (not needed when allowedOrigins is '*').
          */
         'allowedOriginsPatterns' => [],
 
         /**
-         * Weather to send the `Access-Control-Allow-Credentials` header.
-         *
-         * The Access-Control-Allow-Credentials response header tells browsers whether
-         * the server allows cross-origin HTTP requests to include credentials.
-         *
-         * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
+         * Whether to send the Access-Control-Allow-Credentials header.
+         * Must be false when allowedOrigins is '*'.
+         * JWT is passed in Authorization header, so cookies/credentials are not needed.
          */
         'supportsCredentials' => false,
 
         /**
-         * Set headers to allow.
-         *
-         * The Access-Control-Allow-Headers response header is used in response to
-         * a preflight request which includes the Access-Control-Request-Headers to
-         * indicate which HTTP headers can be used during the actual request.
-         *
-         * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
+         * Headers the client is allowed to send.
+         *  - Authorization : Required for JWT Bearer tokens
+         *  - Content-Type  : Required for JSON POST/PUT request bodies
+         *  - Accept        : Polite hint to server about expected response format
          */
-        'allowedHeaders' => [],
+        'allowedHeaders' => ['Authorization', 'Content-Type', 'Accept', 'X-Requested-With'],
 
         /**
-         * Set headers to expose.
-         *
-         * The Access-Control-Expose-Headers response header allows a server to
-         * indicate which response headers should be made available to scripts running
-         * in the browser, in response to a cross-origin request.
-         *
-         * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers
+         * Response headers exposed to the client JavaScript / HTTP client.
          */
         'exposedHeaders' => [],
 
         /**
-         * Set methods to allow.
-         *
-         * The Access-Control-Allow-Methods response header specifies one or more
-         * methods allowed when accessing a resource in response to a preflight
-         * request.
-         *
-         * E.g.:
-         *   - ['GET', 'POST', 'PUT', 'DELETE']
-         *
-         * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods
+         * Allowed HTTP methods.
+         * OPTIONS must be included for preflight requests to succeed.
          */
-        'allowedMethods' => [],
+        'allowedMethods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 
         /**
-         * Set how many seconds the results of a preflight request can be cached.
-         *
-         * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age
+         * How long (in seconds) the browser may cache a preflight response.
+         * 7200 = 2 hours.
          */
         'maxAge' => 7200,
     ];

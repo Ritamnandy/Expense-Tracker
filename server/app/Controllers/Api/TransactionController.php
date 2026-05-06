@@ -39,9 +39,13 @@ class TransactionController extends BaseApiController
 
     public function create()
     {
+        // Determine type first so we can conditionally require category_id.
+        // Transfer transactions move money between accounts — category is not applicable.
+        $type = $this->request->getVar('type');
+
         $rules = [
             'account_id'  => 'required',
-            'category_id' => 'required',
+            'category_id' => ($type !== 'transfer') ? 'required' : 'permit_empty',
             'amount'      => 'required|decimal|greater_than[0]',
             'type'        => 'required|in_list[income,expense,transfer]',
             'date'        => 'required|valid_date[Y-m-d H:i:s]',
@@ -52,20 +56,21 @@ class TransactionController extends BaseApiController
             return $this->error('Validation failed.', ResponseInterface::HTTP_UNPROCESSABLE_ENTITY, $this->validator->getErrors());
         }
 
-        $data = [
-            'id'          => $this->uuid(),
+        $id = $this->uuid();
+
+        $this->model->insert([
+            'id'          => $id,
             'user_id'     => $this->userId(),
             'account_id'  => $this->request->getVar('account_id'),
             'category_id' => $this->request->getVar('category_id'),
             'amount'      => $this->request->getVar('amount'),
-            'type'        => $this->request->getVar('type'),
+            'type'        => $type,
             'date'        => $this->request->getVar('date'),
             'note'        => $this->request->getVar('note'),
-        ];
+        ]);
 
-        $this->model->insert($data);
-
-        return $this->success($data, 'Transaction created.', ResponseInterface::HTTP_CREATED);
+        // Return the full persisted record (includes DB-set created_at / updated_at)
+        return $this->success($this->model->find($id), 'Transaction created.', ResponseInterface::HTTP_CREATED);
     }
 
     // ── GET /api/v1/transactions/:id ──────────────────────────────────────

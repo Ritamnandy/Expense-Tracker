@@ -37,18 +37,19 @@ class AccountController extends BaseApiController
             return $this->error('Validation failed.', ResponseInterface::HTTP_UNPROCESSABLE_ENTITY, $this->validator->getErrors());
         }
 
-        $data = [
-            'id'       => $this->uuid(),
+        $id = $this->uuid();
+
+        $this->model->insert([
+            'id'       => $id,
             'user_id'  => $this->userId(),
             'name'     => $this->request->getVar('name'),
             'type'     => $this->request->getVar('type'),
             'balance'  => $this->request->getVar('balance') ?? 0,
             'currency' => $this->request->getVar('currency') ?? 'INR',
-        ];
+        ]);
 
-        $this->model->insert($data);
-
-        return $this->success($data, 'Account created.', ResponseInterface::HTTP_CREATED);
+        // Return the full persisted record (includes DB-set created_at / updated_at)
+        return $this->success($this->model->find($id), 'Account created.', ResponseInterface::HTTP_CREATED);
     }
 
     // ── GET /api/v1/accounts/:id ──────────────────────────────────────────

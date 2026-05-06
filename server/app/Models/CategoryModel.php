@@ -30,7 +30,7 @@ class CategoryModel extends Model
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
 
-    // ── Scopes ────────────────────────────────────────────────────────────
+    // Scopes
 
     public function activeForUser(string $userId): array
     {

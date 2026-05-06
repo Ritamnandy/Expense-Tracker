@@ -31,7 +31,12 @@ class SyncController extends BaseApiController
         $categoryModel    = new CategoryModel();
         $transactionModel = new TransactionModel();
 
-        // ── 1. Push local changes to server ──────────────────────────────
+        // ── 1. Push local changes to server (wrapped in a transaction) ────
+        // If any upsert fails mid-way, the entire batch is rolled back so
+        // the server never ends up in a partially-updated state.
+
+        $db = \Config\Database::connect();
+        $db->transStart();
 
         if (! empty($changes['accounts'])) {
             $this->upsert($accountModel, $changes['accounts'], $userId, [
@@ -50,6 +55,15 @@ class SyncController extends BaseApiController
                 'account_id', 'category_id', 'amount', 'type', 'date', 'note',
                 'is_deleted', 'synced_at',
             ]);
+        }
+
+        $db->transComplete();
+
+        if (! $db->transStatus()) {
+            return $this->error(
+                'Sync failed due to a server error. No changes were saved. Please retry.',
+                ResponseInterface::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
 
         // ── 2. Pull server changes since last_synced_at ───────────────────

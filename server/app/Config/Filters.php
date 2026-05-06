@@ -53,7 +53,8 @@ class Filters extends BaseFilters
      */
     public array $required = [
         'before' => [
-            'forcehttps', // Force Global Secure Requests
+            // 'forcehttps', // Enable ONLY in production with a valid SSL certificate.
+            //               // Leaving this ON in dev will block all Android HTTP API calls.
             'pagecache',  // Web Page Caching
         ],
         'after' => [
