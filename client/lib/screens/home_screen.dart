@@ -1,17 +1,21 @@
+import 'package:expense_tracker/pages/expense_page.dart';
+import 'package:expense_tracker/pages/income_page.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 class Homescreen extends StatefulWidget {
-  const Homescreen({super.key});
+  final AdvancedDrawerController advancedDrawerController;
+  const Homescreen({super.key, required this.advancedDrawerController});
 
   @override
   State<Homescreen> createState() => _HomescreenState();
 }
 
 class _HomescreenState extends State<Homescreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final now = DateTime.now();
   String time = '';
 
@@ -26,19 +30,30 @@ class _HomescreenState extends State<Homescreen> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        key: _scaffoldKey,
         appBar: AppBar(
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: IconButton(
-              onPressed: () {
-                _scaffoldKey.currentState?.openDrawer();
+          leading: IconButton(
+            onPressed: () {
+              widget.advancedDrawerController.showDrawer();
+            },
+            icon: ValueListenableBuilder<AdvancedDrawerValue>(
+              valueListenable: widget.advancedDrawerController,
+              builder: (_, value, _) {
+                return AnimatedSwitcher(
+                  duration: Duration(milliseconds: 250),
+                  child: Semantics(
+                    label: 'Menu',
+                    onTapHint: 'expand drawer',
+                    child: FaIcon(
+                      key: ValueKey<bool>(value.visible),
+                      value.visible
+                          ? FontAwesomeIcons.xmark
+                          : FontAwesomeIcons.bars,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 27.sp,
+                    ),
+                  ),
+                );
               },
-              icon: FaIcon(
-                FontAwesomeIcons.bars,
-                color: Theme.of(context).colorScheme.primary,
-                size: 27.sp,
-              ),
             ),
           ),
           actions: [
@@ -58,6 +73,7 @@ class _HomescreenState extends State<Homescreen> {
           centerTitle: true,
           bottom: TabBar(
             dividerColor: Colors.transparent,
+
             indicatorColor: Theme.of(context).colorScheme.primary,
             tabs: [
               Tab(
@@ -65,6 +81,7 @@ class _HomescreenState extends State<Homescreen> {
                   'Income',
                   style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                     fontSize: 20.sp,
+
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -81,36 +98,10 @@ class _HomescreenState extends State<Homescreen> {
             ],
           ),
         ),
-        drawer: Drawer(
-          child: SafeArea(
-            child: Column(
-              children: [
-                DrawerHeader(
-                  child: Image.asset(
-                    "assets/images/images.png",
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                ListTile(
-                  leading: FaIcon(FontAwesomeIcons.solidBell),
-                  title: Text('Notifications'),
-                ),
-                ListTile(
-                  leading: FaIcon(FontAwesomeIcons.solidCircleQuestion),
-                  title: Text('Help & Support'),
-                ),
-                ListTile(
-                  leading: FaIcon(FontAwesomeIcons.uber),
-                  title: Text('Settings'),
-                ),
-              ],
-            ),
-          ),
+        body: SafeArea(
+          top: false,
+          child: TabBarView(children: [Incomepage(), Expensepage()]),
         ),
-        body: SafeArea(top: false, child: Column(children: [
-              
-            ],
-          )),
       ),
     );
   }
