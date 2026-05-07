@@ -54,17 +54,7 @@ class _HomescreenState extends State<Homescreen> {
               ),
             ),
           ],
-          title: InkWell(
-            onTap: () => _selectTime(context),
-            child: Text(
-              time,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: Colors.black,
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
+          title: InkWell(onTap: () => _selectTime(context), child: Text(time)),
           centerTitle: true,
           bottom: TabBar(
             dividerColor: Colors.transparent,
@@ -73,9 +63,8 @@ class _HomescreenState extends State<Homescreen> {
               Tab(
                 child: Text(
                   'Income',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.secondary,
-                    fontSize: 15.sp,
+                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -83,9 +72,8 @@ class _HomescreenState extends State<Homescreen> {
               Tab(
                 child: Text(
                   'Expense',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontSize: 15.sp,
+                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -138,12 +126,20 @@ class _HomescreenState extends State<Homescreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: Theme.of(
-                context,
-              ).colorScheme.primary, // header + selected date
-              onPrimary: Colors.white, // text on header
-              surface: Theme.of(context).colorScheme.primaryFixed, // background
-              onSurface: Colors.black, // default text
+              primary: Theme.of(context).colorScheme.primary,
+              onPrimary: Colors.white,
+              onSurface: Theme.of(context).colorScheme.primary,
+            ),
+            datePickerTheme: DatePickerThemeData(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              headerBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              headerForegroundColor: Theme.of(context).colorScheme.primary,
+              dayForegroundColor: WidgetStateProperty.all(
+                Theme.of(context).colorScheme.primary,
+              ),
+              yearForegroundColor: WidgetStateProperty.all(
+                Theme.of(context).colorScheme.primary,
+              ),
             ),
           ),
           child: child!,

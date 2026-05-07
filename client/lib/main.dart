@@ -1,10 +1,18 @@
+import 'package:expense_tracker/provider/theme_provider.dart';
 import 'package:expense_tracker/screens/splash_screen.dart';
+import 'package:expense_tracker/theme/apptheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => ThemeProvider())],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -15,6 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return ScreenUtilInit(
       designSize: Size(width, height),
       minTextAdapt: true,
@@ -24,19 +33,13 @@ class MyApp extends StatelessWidget {
         themeAnimationCurve: Curves.easeIn,
         title: 'Expense Tracker',
 
-        themeMode: ThemeMode.system,
-        // darkTheme: ThemeData(
-        //   brightness: Brightness.dark,
-        //   primaryColor: Colors.blue,
-        //   scaffoldBackgroundColor: Colors.black,
-        //   appBarTheme: AppBarTheme(backgroundColor: Colors.black),
-        // ),
-        theme: ThemeData(
-          textTheme: GoogleFonts.openSansTextTheme(),
-
-          useMaterial3: true,
-          colorScheme: .fromSeed(
-            seedColor: const Color.fromARGB(255, 40, 156, 131),
+        themeMode: themeProvider.themeMode,
+        darkTheme: AppTheme.darkTheme.copyWith(
+          textTheme: GoogleFonts.poppinsTextTheme(AppTheme.darkTheme.textTheme),
+        ),
+        theme: AppTheme.lightTheme.copyWith(
+          textTheme: GoogleFonts.poppinsTextTheme(
+            AppTheme.lightTheme.textTheme,
           ),
         ),
         home: const Splashscreen(),
