@@ -4,5 +4,11 @@ class Chartdata {
   final String purpose;
   final double amount;
   final Color color;
-  Chartdata({required this.purpose, required this.amount, required this.color});
+  final String currencySymbol;
+  Chartdata({
+    required this.purpose,
+    required this.amount,
+    required this.color,
+    required this.currencySymbol,
+  });
 }

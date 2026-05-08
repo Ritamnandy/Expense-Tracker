@@ -1,5 +1,5 @@
-import 'package:expense_tracker/pages/expense_page.dart';
-import 'package:expense_tracker/pages/income_page.dart';
+import 'package:expense_tracker/pages/expense/expense_page.dart';
+import 'package:expense_tracker/pages/income/income_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
@@ -27,80 +27,86 @@ class _HomescreenState extends State<Homescreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              widget.advancedDrawerController.showDrawer();
-            },
-            icon: ValueListenableBuilder<AdvancedDrawerValue>(
-              valueListenable: widget.advancedDrawerController,
-              builder: (_, value, _) {
-                return AnimatedSwitcher(
-                  duration: Duration(milliseconds: 250),
-                  child: Semantics(
-                    label: 'Menu',
-                    onTapHint: 'expand drawer',
-                    child: FaIcon(
-                      key: ValueKey<bool>(value.visible),
-                      value.visible
-                          ? FontAwesomeIcons.xmark
-                          : FontAwesomeIcons.bars,
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 27.sp,
-                    ),
-                  ),
-                );
+    return InkWell(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () {
+                widget.advancedDrawerController.showDrawer();
               },
-            ),
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 20.00),
-              child: IconButton(
-                onPressed: () {},
-                icon: FaIcon(
-                  FontAwesomeIcons.solidBell,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 27.sp,
-                ),
+              icon: ValueListenableBuilder<AdvancedDrawerValue>(
+                valueListenable: widget.advancedDrawerController,
+                builder: (_, value, _) {
+                  return AnimatedSwitcher(
+                    duration: Duration(milliseconds: 250),
+                    child: Semantics(
+                      label: 'Menu',
+                      onTapHint: 'expand drawer',
+                      child: FaIcon(
+                        key: ValueKey<bool>(value.visible),
+                        value.visible
+                            ? FontAwesomeIcons.xmark
+                            : FontAwesomeIcons.bars,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 27.sp,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
-          ],
-          title: InkWell(onTap: () => _selectTime(context), child: Text(time)),
-          centerTitle: true,
-          bottom: TabBar(
-            dividerColor: Colors.transparent,
-
-            indicatorColor: Theme.of(context).colorScheme.primary,
-            tabs: [
-              Tab(
-                child: Text(
-                  'Income',
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                    fontSize: 20.sp,
-
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              Tab(
-                child: Text(
-                  'Expense',
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w700,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 20.00),
+                child: IconButton(
+                  onPressed: () {},
+                  icon: FaIcon(
+                    FontAwesomeIcons.solidBell,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 27.sp,
                   ),
                 ),
               ),
             ],
+            title: InkWell(
+              onTap: () => _selectTime(context),
+              child: Text(time),
+            ),
+            centerTitle: true,
+            bottom: TabBar(
+              dividerColor: Colors.transparent,
+
+              indicatorColor: Theme.of(context).colorScheme.primary,
+              tabs: [
+                Tab(
+                  child: Text(
+                    'Income',
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                      fontSize: 20.sp,
+
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    'Expense',
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        body: SafeArea(
-          top: false,
-          child: TabBarView(children: [Incomepage(), Expensepage()]),
+          body: SafeArea(
+            top: false,
+            child: TabBarView(children: [Incomepage(), Expensepage()]),
+          ),
         ),
       ),
     );
