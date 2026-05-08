@@ -8,8 +8,16 @@ class IncomePiechart extends ChangeNotifier {
     required String purpose,
     required double amount,
     required Color color,
+    required String currencySymbol,
   }) {
-    _incomelist.add(Chartdata(purpose: purpose, amount: amount, color: color));
+    _incomelist.add(
+      Chartdata(
+        purpose: purpose,
+        amount: amount,
+        color: color,
+        currencySymbol: currencySymbol,
+      ),
+    );
     notifyListeners();
   }
 }
