@@ -71,6 +71,7 @@ class _SettingScreenState extends State<SettingScreen> {
           listen: false,
         );
         return AlertDialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text("Select Theme"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -81,6 +82,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     ? Icon(
                         Icons.check,
                         color: Theme.of(context).colorScheme.primary,
+                        size: 30.sp,
                       )
                     : null,
                 onTap: () {
@@ -97,6 +99,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     ? Icon(
                         Icons.check,
                         color: Theme.of(context).colorScheme.primary,
+                        size: 30.sp,
                       )
                     : null,
                 onTap: () {
@@ -113,6 +116,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     ? Icon(
                         Icons.check,
                         color: Theme.of(context).colorScheme.primary,
+                        size: 30.sp,
                       )
                     : null,
                 onTap: () {
