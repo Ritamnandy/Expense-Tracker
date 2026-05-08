@@ -30,6 +30,7 @@ class Piecgartpage extends StatelessWidget {
           "Total Income: ${provider.incomelist.first.currencySymbol} ${total.toStringAsFixed(2)}",
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontSize: 18.sp,
+            color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.bold,
           ),
         ),

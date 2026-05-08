@@ -30,6 +30,7 @@ class ExpensePiechartPage extends StatelessWidget {
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontSize: 18.sp,
             fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.secondary,
           ),
         ),
         const SizedBox(height: 50),

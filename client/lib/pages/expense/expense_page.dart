@@ -157,6 +157,11 @@ class _ExpensepageState extends State<Expensepage> {
                     SizedBox(height: 30),
 
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.secondary,
+                      ),
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
                           expenseChartprovider.addIncome(
