@@ -31,7 +31,6 @@ class _IncomepageState extends State<Incomepage> {
   );
   final TextEditingController amountController = TextEditingController();
   final TextEditingController purposeController = TextEditingController();
-  final TextEditingController currencyController = TextEditingController();
 
   Color randomColor() {
     return Color(0xFF000000 + random.nextInt(0x00FFFFFF));
@@ -47,7 +46,7 @@ class _IncomepageState extends State<Incomepage> {
           children: [
             Container(
               padding: const EdgeInsets.all(20),
-              height: 310,
+              height: 330,
               width: double.infinity,
               // color: Colors.red,
               child: Form(
@@ -57,6 +56,7 @@ class _IncomepageState extends State<Incomepage> {
                     const SizedBox(height: 18),
                     TextFormField(
                       controller: amountController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       keyboardType: TextInputType.numberWithOptions(
                         decimal: true,
                       ),
@@ -69,6 +69,20 @@ class _IncomepageState extends State<Incomepage> {
 
                       decoration: InputDecoration(
                         hintText: "Enter Amount",
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         prefixIconConstraints: const BoxConstraints(
                           minWidth: 0,
                           minHeight: 0,
@@ -146,13 +160,30 @@ class _IncomepageState extends State<Incomepage> {
                     SizedBox(height: 20),
                     TextFormField(
                       controller: purposeController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter Purpose';
                         }
                         return null;
                       },
-                      decoration: InputDecoration(hint: Text('Enter Purpose')),
+                      decoration: InputDecoration(
+                        hint: Text('Enter Purpose'),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
                     ),
                     SizedBox(height: 30),
 
@@ -165,9 +196,6 @@ class _IncomepageState extends State<Incomepage> {
                             color: randomColor(),
                             currencySymbol: selectedCurrency.symbol,
                           );
-                          amountController.clear();
-                          purposeController.clear();
-                          currencyController.clear();
                         }
                       },
                       child: Text(

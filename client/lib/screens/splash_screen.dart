@@ -1,4 +1,4 @@
-import 'package:expense_tracker/screens/hidden_drawer.dart';
+import 'package:expense_tracker/screens/register_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -40,7 +40,7 @@ class _SplashscreenState extends State<Splashscreen> {
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) {
-          return Hiddendrawer();
+          return Registerscreen();
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);

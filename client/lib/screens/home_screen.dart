@@ -61,12 +61,11 @@ class _HomescreenState extends State<Homescreen> {
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 20.00),
-                child: IconButton(
-                  onPressed: () {},
-                  icon: FaIcon(
-                    FontAwesomeIcons.solidBell,
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 27.sp,
+                child: CircleAvatar(
+                  radius: 23.r,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  backgroundImage: const NetworkImage(
+                    'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8YXZhdGFyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
                   ),
                 ),
               ),
