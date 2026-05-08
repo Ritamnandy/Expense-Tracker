@@ -69,18 +69,24 @@ class _IncomepageState extends State<Incomepage> {
 
                       decoration: InputDecoration(
                         hintText: "Enter Amount",
+                        errorStyle: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
                         focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red),
+                          borderSide: BorderSide(color: Colors.red, width: 3),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
+                            width: 3,
                             color: Theme.of(context).colorScheme.primary,
                           ),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red),
+                          borderSide: BorderSide(color: Colors.red, width: 3),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         prefixIconConstraints: const BoxConstraints(
@@ -142,7 +148,7 @@ class _IncomepageState extends State<Incomepage> {
                                 const SizedBox(width: 6),
 
                                 Text(
-                                  "${selectedCurrency.symbol} ",
+                                  "${selectedCurrency.symbol} ${selectedCurrency.code}",
 
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w600,
@@ -168,19 +174,28 @@ class _IncomepageState extends State<Incomepage> {
                         return null;
                       },
                       decoration: InputDecoration(
-                        hint: Text('Enter Purpose'),
+                        hint: Text(
+                          'Enter Purpose',
+                          style: TextStyle(fontSize: 18.5),
+                        ),
+                        errorStyle: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
                         focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red),
+                          borderSide: BorderSide(color: Colors.red, width: 3),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
+                            width: 3,
                             color: Theme.of(context).colorScheme.primary,
                           ),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red),
+                          borderSide: BorderSide(color: Colors.red, width: 3),
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),

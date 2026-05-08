@@ -85,7 +85,7 @@ class AppTheme {
 
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: Colors.white,
+      fillColor: Colors.grey[300],
 
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
 
@@ -104,7 +104,7 @@ class AppTheme {
         borderSide: const BorderSide(color: lightPrimary, width: 2),
       ),
 
-      hintStyle: const TextStyle(color: Colors.grey),
+      hintStyle: TextStyle(color: Colors.grey[700]),
     ),
   );
 
