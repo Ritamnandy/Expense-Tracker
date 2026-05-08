@@ -1,3 +1,4 @@
+import 'package:expense_tracker/provider/add_income_pie_chart.dart';
 import 'package:expense_tracker/provider/theme_provider.dart';
 import 'package:expense_tracker/screens/splash_screen.dart';
 import 'package:expense_tracker/theme/apptheme.dart';
@@ -9,7 +10,10 @@ import 'package:provider/provider.dart';
 void main() {
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => ThemeProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => IncomePiechart()),
+      ],
       child: const MyApp(),
     ),
   );
