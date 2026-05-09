@@ -1,11 +1,12 @@
-import 'package:expense_tracker/pages/expense/expense_page.dart';
-import 'package:expense_tracker/pages/income/income_page.dart';
+import 'package:expense_tracker/pages/expense_page.dart';
+import 'package:expense_tracker/pages/income_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:percent_indicator/flutter_percent_indicator.dart';
 
 class Homescreen extends StatefulWidget {
   final AdvancedDrawerController advancedDrawerController;
@@ -104,7 +105,139 @@ class _HomescreenState extends State<Homescreen> {
           ),
           body: SafeArea(
             top: false,
-            child: TabBarView(children: [Incomepage(), Expensepage()]),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    height: 340,
+                    width: double.infinity,
+                    // color: Colors.red,
+                    child: TabBarView(children: [Incomepage(), Expensepage()]),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 320),
+                    padding: const EdgeInsets.all(15),
+                    height: 420,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      // color: Colors.red,
+                      borderRadius: BorderRadius.circular(20.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      spacing: 80,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              height: 50,
+                              width: 180.w,
+                              child: Center(
+                                child: ListTile(
+                                  leading: Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Icon(
+                                      Icons.arrow_upward,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  title: Text(
+                                    "Income",
+                                    style: TextStyle(
+                                      fontSize: 22.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    "12,000",
+                                    style: TextStyle(
+                                      fontSize: 17.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 50,
+                              width: 190.w,
+                              child: Center(
+                                child: ListTile(
+                                  leading: Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.secondary,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Icon(
+                                      Icons.arrow_downward,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  title: Text(
+                                    "Expense",
+                                    style: TextStyle(
+                                      fontSize: 22.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    "10,000",
+                                    style: TextStyle(
+                                      fontSize: 17.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        CircularPercentIndicator(
+                          radius: 160.0,
+                          lineWidth: 40.0,
+                          animation: true,
+                          animationDuration: 1200,
+                          circularStrokeCap: CircularStrokeCap.round,
+                          percent: 0.7,
+
+                          center: Text(
+                            "Safe to Spend",
+                            style: TextStyle(
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          backgroundColor: Theme.of(
+                            context,
+                          ).inputDecorationTheme.fillColor!,
+                          progressColor: Theme.of(context).colorScheme.primary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

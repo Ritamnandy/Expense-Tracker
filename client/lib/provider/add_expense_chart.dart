@@ -1,7 +1,7 @@
 import 'package:expense_tracker/models/chartdata.dart';
 import 'package:flutter/material.dart';
 
-class ExpensePiechart extends ChangeNotifier {
+class ExpenseAndIncomeChart extends ChangeNotifier {
   final List<Chartdata> _incomelist = [];
   List<Chartdata> get incomelist => _incomelist;
   void addIncome({
