@@ -10,6 +10,7 @@ class InitSheredPref {
   }
 
   Future<void> setTheme(String theme) async {
+    await _prefs?.clear();
     await _prefs?.setString("theme", theme);
   }
 
