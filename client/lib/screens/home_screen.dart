@@ -1,5 +1,6 @@
 import 'package:expense_tracker/pages/expense_page.dart';
 import 'package:expense_tracker/pages/income_page.dart';
+import 'package:expense_tracker/provider/add_expense_chart.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/flutter_percent_indicator.dart';
+import 'package:provider/provider.dart';
 
 class Homescreen extends StatefulWidget {
   final AdvancedDrawerController advancedDrawerController;
@@ -28,6 +30,24 @@ class _HomescreenState extends State<Homescreen> {
 
   @override
   Widget build(BuildContext context) {
+    final chartProvider = Provider.of<ExpenseAndIncomeChart>(context);
+    final totalIncome = chartProvider.list
+        .where((element) => element.isExpense == false)
+        .fold(0.0, (previousValue, element) => previousValue + element.amount);
+    final totalExpense = chartProvider.list
+        .where((element) => element.isExpense == true)
+        .fold(0.0, (previousValue, element) => previousValue + element.amount);
+
+    final currencySymbol = chartProvider.list.isNotEmpty
+        ? chartProvider.list.first.currencySymbol
+        : '₹'; // Default to '₹' if the list is empty
+    final safeToSpend = totalIncome - totalExpense;
+    final safeToSpendPercentage = totalIncome > 0
+        ? (safeToSpend / totalIncome).clamp(0.0, 1.0)
+        : 0.0;
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    final daysPassed = daysInMonth - now.day;
+
     return InkWell(
       onTap: () => FocusScope.of(context).unfocus(),
       child: DefaultTabController(
@@ -107,7 +127,8 @@ class _HomescreenState extends State<Homescreen> {
             top: false,
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
-              child: Stack(
+
+              child: Column(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(20),
@@ -117,23 +138,16 @@ class _HomescreenState extends State<Homescreen> {
                     child: TabBarView(children: [Incomepage(), Expensepage()]),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(top: 320),
+                    // margin: const EdgeInsets.only(top: 10),
                     padding: const EdgeInsets.all(15),
-                    height: 420,
+                    height: 480,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       // color: Colors.red,
                       borderRadius: BorderRadius.circular(20.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
                     ),
                     child: Column(
-                      spacing: 80,
+                      spacing: 70,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -165,7 +179,7 @@ class _HomescreenState extends State<Homescreen> {
                                     ),
                                   ),
                                   subtitle: Text(
-                                    "12,000",
+                                    '$currencySymbol ${totalIncome.toStringAsFixed(2)}',
                                     style: TextStyle(
                                       fontSize: 17.sp,
                                       fontWeight: FontWeight.bold,
@@ -201,7 +215,7 @@ class _HomescreenState extends State<Homescreen> {
                                     ),
                                   ),
                                   subtitle: Text(
-                                    "10,000",
+                                    '$currencySymbol ${totalExpense.toStringAsFixed(2)}',
                                     style: TextStyle(
                                       fontSize: 17.sp,
                                       fontWeight: FontWeight.bold,
@@ -218,14 +232,48 @@ class _HomescreenState extends State<Homescreen> {
                           animation: true,
                           animationDuration: 1200,
                           circularStrokeCap: CircularStrokeCap.round,
-                          percent: 0.7,
+                          percent: safeToSpendPercentage,
 
-                          center: Text(
-                            "Safe to Spend",
-                            style: TextStyle(
-                              fontSize: 20.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          center: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Safe to Spend",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium
+                                    ?.copyWith(
+                                      fontSize: 22.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+
+                              SizedBox(height: 10),
+
+                              Text(
+                                "$currencySymbol ${safeToSpend.toStringAsFixed(2)}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium
+                                    ?.copyWith(
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+
+                              SizedBox(height: 8),
+
+                              Text(
+                                "$daysPassed days left",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium
+                                    ?.copyWith(
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+                            ],
                           ),
                           backgroundColor: Theme.of(
                             context,
@@ -233,6 +281,88 @@ class _HomescreenState extends State<Homescreen> {
                           progressColor: Theme.of(context).colorScheme.primary,
                         ),
                       ],
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    padding: const EdgeInsets.all(15),
+                    height: 80,
+                    width: double.infinity,
+
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Recent Transactions",
+                          style: Theme.of(
+                            context,
+                          ).textTheme.headlineSmall?.copyWith(),
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.refresh,
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 35.sp,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: chartProvider.list.length,
+                    itemBuilder: (context, index) {
+                      if (chartProvider.list.isEmpty) {
+                        return Text("Data not entry");
+                      }
+                      return ListTile(
+                        leading: Container(
+                          height: 35,
+                          width: 35,
+                          decoration: BoxDecoration(
+                            color: chartProvider.list[index].isExpense
+                                ? Theme.of(context).colorScheme.secondary
+                                : Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Icon(
+                            chartProvider.list[index].isExpense
+                                ? Icons.arrow_downward
+                                : Icons.arrow_upward,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        title: Text(
+                          chartProvider.list[index].purpose,
+                          style: TextStyle(
+                            fontSize: 22.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        trailing: Text(
+                          '$currencySymbol ${chartProvider.list[index].amount.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            fontSize: 17.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
+                  Container(
+                    // margin: const EdgeInsets.only(top: 60),
+                    height: 60,
+                    width: double.infinity,
+                    decoration: BoxDecoration(color: Colors.grey),
+                    child: Center(
+                      child: Text(
+                        "Place for add..",
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
                     ),
                   ),
                 ],

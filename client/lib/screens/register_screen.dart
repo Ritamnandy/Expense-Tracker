@@ -10,7 +10,7 @@ class Registerscreen extends StatefulWidget {
 
 class _RegisterscreenState extends State<Registerscreen> {
   final formKey = GlobalKey<FormState>();
-  bool isVisible = false;
+  bool isVisible = true;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
@@ -47,19 +47,25 @@ class _RegisterscreenState extends State<Registerscreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.redAccent),
+                          errorStyle: const TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
                           ),
-                          errorBorder: OutlineInputBorder(
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red, width: 3),
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.redAccent),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(
+                              width: 3,
                               color: Theme.of(context).colorScheme.primary,
                             ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red, width: 3),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           hint: Text('Enter first name'),
                         ),
@@ -77,19 +83,25 @@ class _RegisterscreenState extends State<Registerscreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.redAccent),
+                          errorStyle: const TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
                           ),
-                          errorBorder: OutlineInputBorder(
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red, width: 3),
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.redAccent),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(
+                              width: 3,
                               color: Theme.of(context).colorScheme.primary,
                             ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red, width: 3),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           hint: Text('Enter last name'),
                         ),
@@ -114,19 +126,25 @@ class _RegisterscreenState extends State<Registerscreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.redAccent),
+                          errorStyle: const TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
                           ),
-                          errorBorder: OutlineInputBorder(
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red, width: 3),
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.redAccent),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(
+                              width: 3,
                               color: Theme.of(context).colorScheme.primary,
                             ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red, width: 3),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           hint: Text('Enter email'),
                         ),
@@ -150,20 +168,25 @@ class _RegisterscreenState extends State<Registerscreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          errorStyle: TextStyle(color: Colors.redAccent),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.redAccent),
+                          errorStyle: const TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
                           ),
-                          errorBorder: OutlineInputBorder(
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red, width: 3),
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.redAccent),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(
+                              width: 3,
                               color: Theme.of(context).colorScheme.primary,
                             ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red, width: 3),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           hint: Text('Enter password'),
                           suffixIcon: Padding(

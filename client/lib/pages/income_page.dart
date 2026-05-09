@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:currency_picker/currency_picker.dart';
+import 'package:expense_tracker/provider/add_expense_chart.dart';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Incomepage extends StatefulWidget {
   const Incomepage({super.key});
@@ -36,6 +38,8 @@ class _IncomepageState extends State<Incomepage> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: non_constant_identifier_names
+    final Chartprovider = Provider.of<ExpenseAndIncomeChart>(context);
     return Scaffold(
       body: Form(
         key: formKey,
@@ -181,7 +185,17 @@ class _IncomepageState extends State<Incomepage> {
 
             ElevatedButton(
               onPressed: () {
-                if (formKey.currentState!.validate()) {}
+                if (formKey.currentState!.validate()) {
+                  Chartprovider.addIncome(
+                    purpose: purposeController.text,
+                    amount: double.parse(amountController.text),
+                    isExpense: false,
+                    currencySymbol: selectedCurrency.symbol,
+                  );
+                  purposeController.clear();
+                  amountController.clear();
+                  FocusScope.of(context).unfocus();
+                }
               },
               child: Text(
                 "Submit",

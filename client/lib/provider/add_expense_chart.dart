@@ -2,19 +2,19 @@ import 'package:expense_tracker/models/chartdata.dart';
 import 'package:flutter/material.dart';
 
 class ExpenseAndIncomeChart extends ChangeNotifier {
-  final List<Chartdata> _incomelist = [];
-  List<Chartdata> get incomelist => _incomelist;
+  final List<Chartdata> _list = [];
+  List<Chartdata> get list => _list;
   void addIncome({
     required String purpose,
     required double amount,
-    required Color color,
     required String currencySymbol,
+    required bool isExpense,
   }) {
-    _incomelist.add(
+    _list.add(
       Chartdata(
         purpose: purpose,
         amount: amount,
-        color: color,
+        isExpense: isExpense,
         currencySymbol: currencySymbol,
       ),
     );

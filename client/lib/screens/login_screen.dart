@@ -9,7 +9,7 @@ class Loginscreen extends StatefulWidget {
 }
 
 class _LoginscreenState extends State<Loginscreen> {
-  bool isVisible = false;
+  bool isVisible = true;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -57,19 +57,25 @@ class _LoginscreenState extends State<Loginscreen> {
                         return null;
                       },
                       decoration: InputDecoration(
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.redAccent),
+                        errorStyle: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
                         ),
-                        errorBorder: OutlineInputBorder(
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 3),
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.redAccent),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
+                            width: 3,
                             color: Theme.of(context).colorScheme.primary,
                           ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 3),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         hint: Text('Enter email'),
                       ),
@@ -92,19 +98,25 @@ class _LoginscreenState extends State<Loginscreen> {
                         return null;
                       },
                       decoration: InputDecoration(
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.redAccent),
+                        errorStyle: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
                         ),
-                        errorBorder: OutlineInputBorder(
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 3),
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.redAccent),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
+                            width: 3,
                             color: Theme.of(context).colorScheme.primary,
                           ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 3),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         hint: Text('Enter password'),
                         suffixIcon: Padding(
