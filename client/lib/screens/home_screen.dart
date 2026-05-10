@@ -25,18 +25,37 @@ class _HomescreenState extends State<Homescreen> {
   @override
   void initState() {
     time = DateFormat('dd MMM yyyy').format(now);
+    Future.microtask(() {
+      // ignore: use_build_context_synchronously
+      context.read<ExpenseAndIncomeChart>().loadData();
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final chartProvider = Provider.of<ExpenseAndIncomeChart>(context);
-    final totalIncome = chartProvider.list
-        .where((element) => element.isExpense == false)
-        .fold(0.0, (previousValue, element) => previousValue + element.amount);
-    final totalExpense = chartProvider.list
-        .where((element) => element.isExpense == true)
-        .fold(0.0, (previousValue, element) => previousValue + element.amount);
+    // if (chartProvider.list.isEmpty) {
+    //   debugPrint("list is empty");
+    //   return Text("Empty");
+    // }
+    final list = chartProvider.list;
+    final totalIncome = list.isEmpty
+        ? 0.00
+        : list
+              .where((element) => element.isExpense == false)
+              .fold(
+                0.0,
+                (previousValue, element) => previousValue + element.amount,
+              );
+    final totalExpense = list.isEmpty
+        ? 0.00
+        : list
+              .where((element) => element.isExpense == true)
+              .fold(
+                0.0,
+                (previousValue, element) => previousValue + element.amount,
+              );
 
     final currencySymbol = chartProvider.list.isNotEmpty
         ? chartProvider.list.first.currencySymbol
@@ -406,9 +425,15 @@ class _HomescreenState extends State<Homescreen> {
       },
     );
     if (datetime != null) {
+      _searchbydate(datetime.toString().split(' ')[0]);
       setState(() {
         time = DateFormat('dd MMM yyyy').format(datetime);
       });
     }
+  }
+
+  void _searchbydate(String date) async {
+    // ignore: use_build_context_synchronously
+    await context.read<ExpenseAndIncomeChart>().searchByDate(date);
   }
 }

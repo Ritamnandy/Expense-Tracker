@@ -1,3 +1,4 @@
+import 'package:expense_tracker/db/db_helper.dart';
 import 'package:expense_tracker/models/init_shered_pref.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
 
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await InitSheredPref.instance.getSharedPref();
+  await DBHelper.instance.database;
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
   runApp(

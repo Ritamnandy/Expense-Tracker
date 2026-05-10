@@ -1,5 +1,7 @@
 import 'package:expense_tracker/screens/hidden_drawer.dart';
+import 'package:expense_tracker/screens/register_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Loginscreen extends StatefulWidget {
   const Loginscreen({super.key});
@@ -16,20 +18,35 @@ class _LoginscreenState extends State<Loginscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-        ),
-      ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           children: [
-            const SizedBox(height: 110),
+            const SizedBox(height: 100),
+            Padding(
+              padding: const EdgeInsets.only(right: 145),
+              child: Text(
+                'Welcome Back!',
+                textAlign: TextAlign.left,
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 25.sp,
+                ),
+              ),
+            ),
+            const SizedBox(height: 5),
+            Padding(
+              padding: const EdgeInsets.only(right: 173),
+              child: Text(
+                'Login to get started',
+                textAlign: TextAlign.left,
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16.5.sp,
+                ),
+              ),
+            ),
+            const SizedBox(height: 90),
             Container(
               padding: const EdgeInsets.all(20),
               height: 430,
@@ -77,6 +94,10 @@ class _LoginscreenState extends State<Loginscreen> {
                           borderSide: BorderSide(color: Colors.red, width: 3),
                           borderRadius: BorderRadius.circular(10),
                         ),
+                        prefixIcon: Icon(
+                          Icons.email,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                         hint: Text('Enter email'),
                       ),
                     ),
@@ -119,6 +140,10 @@ class _LoginscreenState extends State<Loginscreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         hint: Text('Enter password'),
+                        prefixIcon: Icon(
+                          Icons.lock,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                         suffixIcon: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: IconButton(
@@ -154,6 +179,40 @@ class _LoginscreenState extends State<Loginscreen> {
                       ),
                     ),
                   ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        Registerscreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: SlideTransition(
+                              position: Tween<Offset>(
+                                begin: const Offset(1.0, 0.0),
+                                end: Offset.zero,
+                              ).animate(animation),
+                              child: child,
+                            ),
+                          );
+                        },
+                  ),
+                );
+              },
+              child: Text(
+                'Create Account',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20.sp,
                 ),
               ),
             ),
