@@ -404,16 +404,16 @@ class _HomescreenState extends State<Homescreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: Theme.of(context).colorScheme.primary,
-              onPrimary: Colors.white,
-              onSurface: Theme.of(context).colorScheme.primary,
+              primary: Theme.of(context).colorScheme.secondary,
+              onPrimary: Colors.black,
+              onSurface: Theme.of(context).colorScheme.secondary,
             ),
             datePickerTheme: DatePickerThemeData(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               headerBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
               headerForegroundColor: Theme.of(context).colorScheme.primary,
               dayForegroundColor: WidgetStateProperty.all(
-                Theme.of(context).colorScheme.primary,
+                Theme.of(context).colorScheme.primaryContainer,
               ),
               yearForegroundColor: WidgetStateProperty.all(
                 Theme.of(context).colorScheme.primary,
