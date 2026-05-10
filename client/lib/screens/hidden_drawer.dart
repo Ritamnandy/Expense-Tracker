@@ -60,10 +60,11 @@ class _HiddendrawerState extends State<Hiddendrawer> {
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       drawer: SafeArea(
+        top: false,
         child: Column(
           children: [
             DrawerHeader(
-              child: Image.asset("assets/images/images.png", fit: BoxFit.cover),
+              child: Image.asset("assets/images/logo.png", fit: BoxFit.cover),
             ),
             ListTile(
               onTap: () async {

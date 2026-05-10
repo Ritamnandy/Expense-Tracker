@@ -21,7 +21,7 @@ class _SplashscreenState extends State<Splashscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Image.asset("assets/images/images.png", fit: BoxFit.cover)
+        child: Image.asset("assets/images/logo.png", fit: BoxFit.cover)
             .animate()
             .blur(begin: Offset(0, 0.1), end: Offset(0, 0.5))
             .fadeIn(

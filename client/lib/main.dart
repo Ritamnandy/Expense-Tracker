@@ -35,6 +35,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
+    print(width);
+    print(height);
     final themeProvider = Provider.of<ThemeProvider>(context);
     return ScreenUtilInit(
       designSize: Size(width, height),
