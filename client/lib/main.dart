@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
             AppTheme.lightTheme.textTheme,
           ),
         ),
-        home: const Splashscreen(),
+        home: SafeArea(top: false, child: const Splashscreen()),
       ),
     );
   }

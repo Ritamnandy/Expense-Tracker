@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:currency_picker/currency_picker.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
 
@@ -15,7 +13,7 @@ class Incomepage extends StatefulWidget {
 
 class _IncomepageState extends State<Incomepage> {
   final formKey = GlobalKey<FormState>();
-  final random = Random();
+
   Currency selectedCurrency = Currency(
     code: "INR",
     name: "Indian Rupee",
@@ -31,10 +29,6 @@ class _IncomepageState extends State<Incomepage> {
   );
   final TextEditingController amountController = TextEditingController();
   final TextEditingController purposeController = TextEditingController();
-
-  Color randomColor() {
-    return Color(0xFF000000 + random.nextInt(0x00FFFFFF));
-  }
 
   @override
   Widget build(BuildContext context) {
