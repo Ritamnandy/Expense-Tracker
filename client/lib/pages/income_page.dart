@@ -183,9 +183,10 @@ class _IncomepageState extends State<Incomepage> {
                   isExpense: false,
                   currencySymbol: selectedCurrency.symbol,
                 );
-                purposeController.clear();
-                amountController.clear();
+                // purposeController.clear();
+                // amountController.clear();
                 FocusScope.of(context).unfocus();
+                formKey.currentState!.reset();
               }
             },
             child: Text("Submit", style: Theme.of(context).textTheme.bodyLarge),

@@ -4,6 +4,7 @@ import 'package:expense_tracker/provider/add_expense_chart.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -71,13 +72,16 @@ class _HomescreenState extends State<Homescreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: DefaultTabController(
         length: 2,
-        child: AnimatedPadding(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
+        child: RefreshIndicator(
+          displacement: 100,
+          strokeWidth: 3,
+          onRefresh: () async {
+            await Future.delayed(const Duration(seconds: 2));
+            time = DateFormat('dd MMM yyyy').format(now);
+            await chartProvider.loadData();
+          },
           child: Scaffold(
+            resizeToAvoidBottomInset: true,
             appBar: AppBar(
               leading: IconButton(
                 onPressed: () {
@@ -153,245 +157,257 @@ class _HomescreenState extends State<Homescreen> {
             body: SingleChildScrollView(
               scrollDirection: Axis.vertical,
 
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    height: 340,
-                    width: double.infinity,
-                    // color: Colors.red,
-                    child: TabBarView(children: [Incomepage(), Expensepage()]),
-                  ),
-                  Container(
-                    // margin: const EdgeInsets.only(top: 10),
-                    padding: const EdgeInsets.all(15),
-                    height: 480,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      // color: Colors.red,
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: Column(
-                      spacing: 70,
-                      children: [
-                        Row(
+              child:
+                  Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        height: 340,
+                        width: double.infinity,
+                        // color: Colors.red,
+                        child: TabBarView(
+                          children: [Incomepage(), Expensepage()],
+                        ),
+                      ),
+                      Container(
+                        // margin: const EdgeInsets.only(top: 10),
+                        padding: const EdgeInsets.all(15),
+                        height: 480,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          // color: Colors.red,
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                        child: Column(
+                          spacing: 70,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  height: 50,
+                                  width: 180.w,
+                                  child: Center(
+                                    child: ListTile(
+                                      leading: Container(
+                                        height: 35,
+                                        width: 35,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.arrow_upward,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      title: Text(
+                                        "Income",
+                                        style: TextStyle(
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        '$currencySymbol ${totalIncome.toStringAsFixed(2)}',
+                                        style: TextStyle(
+                                          fontSize: 17.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 50,
+                                  width: 180.w,
+                                  child: Center(
+                                    child: ListTile(
+                                      leading: Container(
+                                        height: 35,
+                                        width: 35,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.secondary,
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.arrow_downward,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      title: Text(
+                                        "Expense",
+                                        style: TextStyle(
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        '$currencySymbol ${totalExpense.toStringAsFixed(2)}',
+                                        style: TextStyle(
+                                          fontSize: 17.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            CircularPercentIndicator(
+                              radius: 160.0,
+                              lineWidth: 40.0,
+                              animation: true,
+                              animationDuration: 1200,
+                              circularStrokeCap: CircularStrokeCap.round,
+                              percent: safeToSpendPercentage,
+
+                              center: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Safe to Spend",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(
+                                          fontSize: 22.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+
+                                  SizedBox(height: 10),
+
+                                  Text(
+                                    "$currencySymbol ${safeToSpend.toStringAsFixed(2)}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+
+                                  SizedBox(height: 8),
+
+                                  Text(
+                                    "$daysPassed days left",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: Theme.of(
+                                context,
+                              ).inputDecorationTheme.fillColor!,
+                              progressColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        padding: const EdgeInsets.all(15),
+                        height: 80,
+                        width: double.infinity,
+
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(
-                              height: 50,
-                              width: 180.w,
-                              child: Center(
-                                child: ListTile(
-                                  leading: Container(
-                                    height: 35,
-                                    width: 35,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.primary,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Icon(
-                                      Icons.arrow_upward,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  title: Text(
-                                    "Income",
-                                    style: TextStyle(
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    '$currencySymbol ${totalIncome.toStringAsFixed(2)}',
-                                    style: TextStyle(
-                                      fontSize: 17.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                            Text(
+                              "Recent Transactions",
+                              style: Theme.of(
+                                context,
+                              ).textTheme.headlineSmall?.copyWith(),
                             ),
-                            SizedBox(
-                              height: 50,
-                              width: 180.w,
-                              child: Center(
-                                child: ListTile(
-                                  leading: Container(
-                                    height: 35,
-                                    width: 35,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.secondary,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Icon(
-                                      Icons.arrow_downward,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  title: Text(
-                                    "Expense",
-                                    style: TextStyle(
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    '$currencySymbol ${totalExpense.toStringAsFixed(2)}',
-                                    style: TextStyle(
-                                      fontSize: 17.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.refresh,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 35.sp,
                               ),
                             ),
                           ],
                         ),
-                        CircularPercentIndicator(
-                          radius: 160.0,
-                          lineWidth: 40.0,
-                          animation: true,
-                          animationDuration: 1200,
-                          circularStrokeCap: CircularStrokeCap.round,
-                          percent: safeToSpendPercentage,
-
-                          center: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Safe to Spend",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium
-                                    ?.copyWith(
-                                      fontSize: 22.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                              ),
-
-                              SizedBox(height: 10),
-
-                              Text(
-                                "$currencySymbol ${safeToSpend.toStringAsFixed(2)}",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium
-                                    ?.copyWith(
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                              ),
-
-                              SizedBox(height: 8),
-
-                              Text(
-                                "$daysPassed days left",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium
-                                    ?.copyWith(
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                              ),
-                            ],
-                          ),
-                          backgroundColor: Theme.of(
-                            context,
-                          ).inputDecorationTheme.fillColor!,
-                          progressColor: Theme.of(context).colorScheme.primary,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 20),
-                    padding: const EdgeInsets.all(15),
-                    height: 80,
-                    width: double.infinity,
-
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Recent Transactions",
-                          style: Theme.of(
-                            context,
-                          ).textTheme.headlineSmall?.copyWith(),
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.refresh,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 35.sp,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: chartProvider.list.length,
-                    itemBuilder: (context, index) {
-                      if (chartProvider.list.isEmpty) {
-                        return Text("Data not entry");
-                      }
-                      return ListTile(
-                        leading: Container(
-                          height: 35,
-                          width: 35,
-                          decoration: BoxDecoration(
-                            color: chartProvider.list[index].isExpense
-                                ? Theme.of(context).colorScheme.secondary
-                                : Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(
-                            chartProvider.list[index].isExpense
-                                ? Icons.arrow_downward
-                                : Icons.arrow_upward,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        title: Text(
-                          chartProvider.list[index].purpose,
-                          style: TextStyle(
-                            fontSize: 17.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        trailing: Text(
-                          '$currencySymbol ${chartProvider.list[index].amount.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            fontSize: 17.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  Container(
-                    // margin: const EdgeInsets.only(top: 60),
-                    height: 60,
-                    width: double.infinity,
-                    decoration: BoxDecoration(color: Colors.grey),
-                    child: Center(
-                      child: Text(
-                        "Place for add..",
-                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
-                    ),
+
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: chartProvider.list.length,
+                        itemBuilder: (context, index) {
+                          if (chartProvider.list.isEmpty) {
+                            return Text("Data not entry");
+                          }
+                          return ListTile(
+                            leading: Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                color: chartProvider.list[index].isExpense
+                                    ? Theme.of(context).colorScheme.secondary
+                                    : Theme.of(context).colorScheme.primary,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Icon(
+                                chartProvider.list[index].isExpense
+                                    ? Icons.arrow_downward
+                                    : Icons.arrow_upward,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            title: Text(
+                              chartProvider.list[index].purpose,
+                              style: TextStyle(
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            trailing: Text(
+                              '$currencySymbol ${chartProvider.list[index].amount.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      Container(
+                        // margin: const EdgeInsets.only(top: 60),
+                        height: 60,
+                        width: double.infinity,
+                        decoration: BoxDecoration(color: Colors.grey),
+                        child: Center(
+                          child: Text(
+                            "Place for add..",
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ).animate().fadeIn(
+                    curve: Curves.easeIn,
+                    duration: const Duration(milliseconds: 1000),
                   ),
-                ],
-              ),
             ),
           ),
         ),

@@ -186,8 +186,7 @@ class _ExpensepageState extends State<Expensepage> {
                   isExpense: true,
                   currencySymbol: selectedCurrency.symbol,
                 );
-                purposeController.clear();
-                amountController.clear();
+                formKey.currentState!.reset();
                 FocusScope.of(context).unfocus();
               }
             },
