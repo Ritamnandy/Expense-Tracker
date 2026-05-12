@@ -1,3 +1,4 @@
+import 'package:expense_tracker/core/validators/validator.dart';
 import 'package:expense_tracker/screens/hidden_drawer.dart';
 import 'package:expense_tracker/screens/register_screen.dart';
 import 'package:flutter/material.dart';
@@ -70,19 +71,8 @@ class _LoginscreenState extends State<Loginscreen> {
                             keyboardType: TextInputType.emailAddress,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter email';
-                              }
-                              String pattern =
-                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
-                              RegExp regex = RegExp(pattern);
-
-                              if (!regex.hasMatch(value)) {
-                                return 'Enter a valid email';
-                              }
-                              return null;
-                            },
+                            validator: (value) =>
+                                Validator.emailValidator(value),
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(
                                 color: Colors.red,

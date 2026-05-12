@@ -1,3 +1,4 @@
+import 'package:expense_tracker/core/validators/validator.dart';
 import 'package:expense_tracker/screens/hidden_drawer.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -167,19 +168,9 @@ class _RegisterscreenState extends State<Registerscreen> {
                             controller: emailController,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter email';
-                              }
-                              String pattern =
-                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
-                              RegExp regex = RegExp(pattern);
-
-                              if (!regex.hasMatch(value)) {
-                                return 'Enter a valid email';
-                              }
-                              return null;
-                            },
+                            validator: (value) =>
+                                Validator.emailValidator(value),
+                            keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(
                                 color: Colors.red,
@@ -224,15 +215,8 @@ class _RegisterscreenState extends State<Registerscreen> {
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             keyboardType: TextInputType.visiblePassword,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter password';
-                              }
-                              if (value.length < 6) {
-                                return 'Password must be at least 6 characters';
-                              }
-                              return null;
-                            },
+                            validator: (value) =>
+                                Validator.passwordValidator(value),
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(
                                 color: Colors.red,
