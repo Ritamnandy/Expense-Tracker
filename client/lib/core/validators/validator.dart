@@ -26,10 +26,6 @@ class Validator {
       return 'Password is required';
     }
 
-    if (value.length < 8) {
-      return 'Password must be at least 8 characters';
-    }
-
     // Uppercase Letter Check
     if (!RegExp(r'[A-Z]').hasMatch(value)) {
       return 'Add at least one uppercase letter';
@@ -49,7 +45,9 @@ class Validator {
     if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
       return 'Add at least one special character';
     }
-
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters';
+    }
     return null;
   }
 }
