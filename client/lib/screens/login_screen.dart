@@ -116,15 +116,8 @@ class _LoginscreenState extends State<Loginscreen> {
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             keyboardType: TextInputType.visiblePassword,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter password';
-                              }
-                              if (value.length < 6) {
-                                return 'Password must be at least 6 characters';
-                              }
-                              return null;
-                            },
+                            validator: (value) =>
+                                Validator.passwordValidator(value),
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(
                                 color: Colors.red,
