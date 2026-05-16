@@ -49,6 +49,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
+    print(width);
     final themeProvider = Provider.of<ThemeProvider>(context);
     return ScreenUtilInit(
       designSize: Size(width, height),
