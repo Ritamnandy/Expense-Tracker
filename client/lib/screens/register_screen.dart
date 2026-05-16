@@ -283,6 +283,7 @@ class _RegisterscreenState extends State<Registerscreen> {
                                     .trim();
                                 String last_name = lastNameController.text
                                     .trim();
+                                _showLoadingDialog(context);
                                 final success = await AuthServices.register(
                                   email: email,
                                   password: password,
@@ -377,9 +378,6 @@ class _RegisterscreenState extends State<Registerscreen> {
   }
 
   void _nextScreen() async {
-    _showLoadingDialog(context);
-    await Future.delayed(const Duration(seconds: 3), () {});
-
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(

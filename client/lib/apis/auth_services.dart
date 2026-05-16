@@ -7,7 +7,7 @@ class AuthServices {
   // http://localhost:8080/api/v1/auth/login
   // http://localhost:8080/api/v1/auth/register
   //192.168.1.5
-  static const String baseUrl = "http://192.168.1.5:8080/api/v1/auth";
+  static const baseUrl = "http://10.75.51.65:8080/api/v1/auth";
 
   static Future<bool> register({
     required String first_name,
@@ -44,33 +44,29 @@ class AuthServices {
     }
   }
 
-  static Future<bool> login({
+  static Future<Map<String, dynamic>> login({
     required String email,
     required String password,
   }) async {
     try {
-      final data = jsonEncode({'email': email, 'password': password});
-      print(data);
       final uri = "$baseUrl/login";
       final url = Uri.parse(uri);
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
-        body: data,
+        body: jsonEncode({'email': email, 'password': password}),
       );
       print(" Login response:--- ${response.body}");
       if (response.statusCode == 200 || response.statusCode == 201) {
         final body = response.body;
         final data = jsonDecode(body);
-        final token = data["token"];
-        await InitSheredPref.instance.setToken(token);
-        return true;
+        return data;
       } else {
-        return false;
+        return {"error": "somthing want wrong"};
       }
     } catch (e) {
       print("Login error:- ${e.toString()}");
-      return false;
+      return {"error": e.toString()};
     }
   }
 }

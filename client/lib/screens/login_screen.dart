@@ -185,15 +185,9 @@ class _LoginscreenState extends State<Loginscreen> {
                                   email: email,
                                   password: password,
                                 );
-                                if (success) {
-                                  Navigator.pop(context);
-                                  _nextScreen();
-                                } else {
-                                  Navigator.pop(context);
-                                  _showerror();
-                                }
+                                Navigator.pop(context);
+                                print(success);
                                 formKey.currentState!.reset();
-                                FocusScope.of(context).unfocus();
                               }
                             },
                             child: Text(

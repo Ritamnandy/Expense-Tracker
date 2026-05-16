@@ -4,8 +4,8 @@ import 'package:expense_tracker/provider/add_expense_chart.dart';
 
 import 'package:expense_tracker/provider/theme_provider.dart';
 import 'package:expense_tracker/screens/hidden_drawer.dart';
-import 'package:expense_tracker/screens/register_screen.dart';
-import 'package:expense_tracker/screens/splash_screen.dart';
+import 'package:expense_tracker/screens/login_screen.dart';
+
 import 'package:expense_tracker/theme/apptheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,8 +37,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    print(width);
-    print(height);
     final themeProvider = Provider.of<ThemeProvider>(context);
     return ScreenUtilInit(
       designSize: Size(width, height),
@@ -63,13 +61,10 @@ class MyApp extends StatelessWidget {
           child: FutureBuilder(
             future: InitSheredPref.instance.getToken(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Splashscreen();
-              }
               final token = snapshot.data;
               // print(token);
               if (token == null) {
-                return Registerscreen();
+                return Loginscreen();
               }
               return Hiddendrawer();
             },
