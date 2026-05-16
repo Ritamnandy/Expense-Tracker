@@ -1,6 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 <uses-permission android:name="android.permission.INTERNET"/>
     <application
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+        
+=======
+>>>>>>> upstream/main
+>>>>>>> Stashed changes
         android:label="Spend Smart"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">

@@ -25,9 +25,32 @@ class ExpenseAndIncomeChart extends ChangeNotifier {
       isExpense: isExpense,
       date: DateTime.now().toString().split(' ')[0],
     );
+<<<<<<< Updated upstream
     await DBHelper.instance.insertData(data);
 
     _list.add(data);
+=======
+<<<<<<< HEAD
+
+    int id = await DBHelper.instance.insertData(data);
+
+    Chartdata newData = Chartdata(
+      id: id,
+      purpose: purpose,
+      amount: amount,
+      currencySymbol: currencySymbol,
+      isExpense: isExpense,
+      date: DateTime.now().toString().split(' ')[0],
+    );
+
+    _list.add(newData);
+
+=======
+    await DBHelper.instance.insertData(data);
+
+    _list.add(data);
+>>>>>>> upstream/main
+>>>>>>> Stashed changes
     notifyListeners();
   }
 
@@ -38,7 +61,24 @@ class ExpenseAndIncomeChart extends ChangeNotifier {
       _list = data;
     } else {
       _list = [];
+<<<<<<< Updated upstream
       notifyListeners();
+=======
+<<<<<<< HEAD
+    }
+    notifyListeners();
+  }
+
+  Future<void> searchByMonth(String month) async {
+    final data = await DBHelper.instance.searchByMonth(month);
+    if (data.isNotEmpty) {
+      _list = data;
+    } else {
+      _list = [];
+=======
+      notifyListeners();
+>>>>>>> upstream/main
+>>>>>>> Stashed changes
     }
     notifyListeners();
   }

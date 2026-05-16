@@ -1,3 +1,11 @@
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+import 'package:expense_tracker/apis/auth_services.dart';
+import 'package:expense_tracker/core/validators/validator.dart';
+=======
+>>>>>>> upstream/main
+>>>>>>> Stashed changes
 import 'package:expense_tracker/screens/hidden_drawer.dart';
 import 'package:expense_tracker/screens/register_screen.dart';
 import 'package:flutter/material.dart';
@@ -70,6 +78,13 @@ class _LoginscreenState extends State<Loginscreen> {
                             keyboardType: TextInputType.emailAddress,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+                            validator: (value) =>
+                                Validator.emailValidator(value),
+=======
+>>>>>>> Stashed changes
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter email';
@@ -83,6 +98,10 @@ class _LoginscreenState extends State<Loginscreen> {
                               }
                               return null;
                             },
+<<<<<<< Updated upstream
+=======
+>>>>>>> upstream/main
+>>>>>>> Stashed changes
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(
                                 color: Colors.red,
@@ -126,6 +145,13 @@ class _LoginscreenState extends State<Loginscreen> {
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             keyboardType: TextInputType.visiblePassword,
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+                            validator: (value) =>
+                                Validator.passwordValidator(value),
+=======
+>>>>>>> Stashed changes
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter password';
@@ -135,6 +161,10 @@ class _LoginscreenState extends State<Loginscreen> {
                               }
                               return null;
                             },
+<<<<<<< Updated upstream
+=======
+>>>>>>> upstream/main
+>>>>>>> Stashed changes
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(
                                 color: Colors.red,
@@ -191,11 +221,41 @@ class _LoginscreenState extends State<Loginscreen> {
                           SizedBox(height: 60),
 
                           ElevatedButton(
+<<<<<<< Updated upstream
                             onPressed: () {
                               if (formKey.currentState!.validate()) {
                                 _nextScreen();
                                 formKey.currentState!.reset();
                                 FocusScope.of(context).unfocus();
+=======
+<<<<<<< HEAD
+                            onPressed: () async {
+                              if (formKey.currentState!.validate()) {
+                                String email = emailController.text.trim();
+                                String password = passwordController.text
+                                    .trim();
+                                _showLoadingDialog(context);
+                                final success = await AuthServices.login(
+                                  email: email,
+                                  password: password,
+                                );
+                                Navigator.pop(context);
+                                // print("success response :- ${success}");
+                                if (success['success'] == true) {
+                                  _nextScreen();
+                                } else {
+                                  _showerror(success['message']);
+                                  FocusScope.of(context).unfocus();
+                                  formKey.currentState!.reset();
+                                }
+=======
+                            onPressed: () {
+                              if (formKey.currentState!.validate()) {
+                                _nextScreen();
+                                formKey.currentState!.reset();
+                                FocusScope.of(context).unfocus();
+>>>>>>> upstream/main
+>>>>>>> Stashed changes
                               }
                             },
                             child: Text(
@@ -279,10 +339,20 @@ class _LoginscreenState extends State<Loginscreen> {
     );
   }
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+  void _nextScreen() {
+=======
+>>>>>>> Stashed changes
   void _nextScreen() async {
     _showLoadingDialog(context);
     await Future.delayed(const Duration(seconds: 3), () {});
 
+<<<<<<< Updated upstream
+=======
+>>>>>>> upstream/main
+>>>>>>> Stashed changes
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
@@ -308,6 +378,13 @@ class _LoginscreenState extends State<Loginscreen> {
   void _showLoadingDialog(BuildContext context) {
     showDialog(
       context: context,
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+      barrierDismissible: false,
+=======
+>>>>>>> upstream/main
+>>>>>>> Stashed changes
       builder: (context) {
         return AlertDialog(
           content: Row(
@@ -327,4 +404,29 @@ class _LoginscreenState extends State<Loginscreen> {
       },
     );
   }
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+
+  void _showerror(String error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        dismissDirection: DismissDirection.horizontal,
+        padding: EdgeInsets.all(10),
+        backgroundColor: Colors.redAccent,
+        content: Center(
+          child: Text(
+            error,
+            style: Theme.of(
+              context,
+            ).textTheme.headlineMedium?.copyWith(fontSize: 18.sp),
+          ),
+        ),
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+=======
+>>>>>>> upstream/main
+>>>>>>> Stashed changes
 }
