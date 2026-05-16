@@ -32,4 +32,8 @@ class InitSheredPref {
     String? value = _prefs?.getString("token");
     return value;
   }
+
+  Future<void> logOut() async {
+    await _prefs?.remove("token");
+  }
 }

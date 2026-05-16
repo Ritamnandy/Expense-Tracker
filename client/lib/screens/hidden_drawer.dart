@@ -1,5 +1,7 @@
+import 'package:expense_tracker/models/init_shered_pref.dart';
 import 'package:expense_tracker/screens/help_screen.dart';
 import 'package:expense_tracker/screens/home_screen.dart';
+import 'package:expense_tracker/screens/login_screen.dart';
 import 'package:expense_tracker/screens/notifications.dart';
 import 'package:expense_tracker/screens/setting_screen.dart';
 import 'package:flutter/material.dart';
@@ -129,7 +131,10 @@ class _HiddendrawerState extends State<Hiddendrawer> {
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () async {
+                await InitSheredPref.instance.logOut();
+                _nextpage();
+              },
               child: Text(
                 "Logout",
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
@@ -150,6 +155,29 @@ class _HiddendrawerState extends State<Hiddendrawer> {
         ),
       ),
       child: pages[currentIndex],
+    );
+  }
+
+  void _nextpage() {
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return Loginscreen();
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1.0, 0.0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            ),
+          );
+        },
+      ),
     );
   }
 }

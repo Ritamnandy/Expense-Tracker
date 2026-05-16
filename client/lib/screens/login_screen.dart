@@ -117,8 +117,8 @@ class _LoginscreenState extends State<Loginscreen> {
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             keyboardType: TextInputType.visiblePassword,
-                            // validator: (value) =>
-                            //     Validator.passwordValidator(value),
+                            validator: (value) =>
+                                Validator.passwordValidator(value),
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(
                                 color: Colors.red,
@@ -186,8 +186,14 @@ class _LoginscreenState extends State<Loginscreen> {
                                   password: password,
                                 );
                                 Navigator.pop(context);
-                                print(success);
-                                formKey.currentState!.reset();
+                                // print("success response :- ${success}");
+                                if (success['success'] == true) {
+                                  _nextScreen();
+                                } else {
+                                  _showerror(success['message']);
+                                  FocusScope.of(context).unfocus();
+                                  formKey.currentState!.reset();
+                                }
                               }
                             },
                             child: Text(
@@ -297,6 +303,7 @@ class _LoginscreenState extends State<Loginscreen> {
   void _showLoadingDialog(BuildContext context) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
           content: Row(
@@ -317,11 +324,21 @@ class _LoginscreenState extends State<Loginscreen> {
     );
   }
 
-  void _showerror() {
+  void _showerror(String error) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: ListTile(title: Text("unsuccessfull")),
-        duration: Duration(seconds: 2),
+        dismissDirection: DismissDirection.horizontal,
+        padding: EdgeInsets.all(10),
+        backgroundColor: Colors.redAccent,
+        content: Center(
+          child: Text(
+            error,
+            style: Theme.of(
+              context,
+            ).textTheme.headlineMedium?.copyWith(fontSize: 18.sp),
+          ),
+        ),
+        duration: Duration(seconds: 3),
       ),
     );
   }

@@ -7,9 +7,9 @@ class AuthServices {
   // http://localhost:8080/api/v1/auth/login
   // http://localhost:8080/api/v1/auth/register
   //192.168.1.5
-  static const baseUrl = "http://10.75.51.65:8080/api/v1/auth";
+  static const baseUrl = "http://10.0.2.2:8080/api/v1/auth";
 
-  static Future<bool> register({
+  static Future<Map<String, dynamic>> register({
     required String first_name,
     required String last_name,
     required String email,
@@ -28,19 +28,21 @@ class AuthServices {
           'password': password,
         }),
       );
-      print(response);
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         final body = response.body;
         final data = jsonDecode(body);
-        final token = data["token"];
+        final token = data['data']['token'] ?? null;
         await InitSheredPref.instance.setToken(token);
-        return true;
+        return data;
       } else {
-        return false;
+        final body = response.body;
+        final error = jsonDecode(body);
+        return error;
       }
     } catch (e) {
       print(e);
-      return false;
+      return {};
     }
   }
 
@@ -51,18 +53,22 @@ class AuthServices {
     try {
       final uri = "$baseUrl/login";
       final url = Uri.parse(uri);
+      print(url);
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({'email': email, 'password': password}),
       );
-      print(" Login response:--- ${response.body}");
       if (response.statusCode == 200 || response.statusCode == 201) {
         final body = response.body;
         final data = jsonDecode(body);
+        final token = data['data']['token'] ?? null;
+        await InitSheredPref.instance.setToken(token);
         return data;
       } else {
-        return {"error": "somthing want wrong"};
+        final body = response.body;
+        final error = jsonDecode(body);
+        return error;
       }
     } catch (e) {
       print("Login error:- ${e.toString()}");

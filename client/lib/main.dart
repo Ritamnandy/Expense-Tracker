@@ -5,6 +5,7 @@ import 'package:expense_tracker/provider/add_expense_chart.dart';
 import 'package:expense_tracker/provider/theme_provider.dart';
 import 'package:expense_tracker/screens/hidden_drawer.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
+import 'package:expense_tracker/screens/splash_screen.dart';
 
 import 'package:expense_tracker/theme/apptheme.dart';
 import 'package:flutter/material.dart';
@@ -29,10 +30,21 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Future<String?> tokenFuture;
+  @override
+  void initState() {
+    tokenFuture = InitSheredPref.instance.getToken();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -58,11 +70,15 @@ class MyApp extends StatelessWidget {
         ),
         home: SafeArea(
           top: false,
+          bottom: false,
           child: FutureBuilder(
-            future: InitSheredPref.instance.getToken(),
+            future: tokenFuture,
             builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Splashscreen();
+              }
               final token = snapshot.data;
-              // print(token);
+
               if (token == null) {
                 return Loginscreen();
               }

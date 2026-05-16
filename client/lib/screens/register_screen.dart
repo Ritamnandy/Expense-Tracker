@@ -290,10 +290,12 @@ class _RegisterscreenState extends State<Registerscreen> {
                                   first_name: first_name,
                                   last_name: last_name,
                                 );
-                                if (success) {
+                                print("register sucess:- $success");
+                                Navigator.pop(context);
+                                if (success['success']) {
                                   _nextScreen();
                                 } else {
-                                  _showerror();
+                                  _showerror(success['message']);
                                 }
                                 formKey.currentState!.reset();
                                 FocusScope.of(context).unfocus();
@@ -402,6 +404,7 @@ class _RegisterscreenState extends State<Registerscreen> {
 
   void _showLoadingDialog(BuildContext context) {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -423,11 +426,21 @@ class _RegisterscreenState extends State<Registerscreen> {
     );
   }
 
-  void _showerror() {
+  void _showerror(String error) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: ListTile(title: Text("unsuccessfull")),
-        duration: Duration(seconds: 2),
+        dismissDirection: DismissDirection.horizontal,
+        padding: EdgeInsets.all(10),
+        backgroundColor: Colors.redAccent,
+        content: Center(
+          child: Text(
+            error,
+            style: Theme.of(
+              context,
+            ).textTheme.headlineMedium?.copyWith(fontSize: 18.sp),
+          ),
+        ),
+        duration: Duration(seconds: 3),
       ),
     );
   }
