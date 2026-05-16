@@ -5,29 +5,13 @@ class InitSheredPref {
   static InitSheredPref get instance => _instance;
   SharedPreferences? _prefs;
   InitSheredPref._init();
-<<<<<<< Updated upstream
-  Future<void> getSharedPref() async {
-=======
-<<<<<<< HEAD
   Future<void> get getSharedPref async {
->>>>>>> Stashed changes
     _prefs ??= await SharedPreferences.getInstance();
   }
 
+  /// set and get theme
   Future<void> setTheme(String theme) async {
-<<<<<<< Updated upstream
-    await _prefs?.clear();
-=======
     await _prefs?.remove("theme");
-=======
-  Future<void> getSharedPref() async {
-    _prefs ??= await SharedPreferences.getInstance();
-  }
-
-  Future<void> setTheme(String theme) async {
-    await _prefs?.clear();
->>>>>>> upstream/main
->>>>>>> Stashed changes
     await _prefs?.setString("theme", theme);
   }
 
@@ -35,9 +19,6 @@ class InitSheredPref {
     String? value = _prefs?.getString("theme");
     return value;
   }
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
 
   /// set and get auth token
 
@@ -55,7 +36,4 @@ class InitSheredPref {
   Future<void> logOut() async {
     await _prefs?.remove("token");
   }
-=======
->>>>>>> upstream/main
->>>>>>> Stashed changes
 }

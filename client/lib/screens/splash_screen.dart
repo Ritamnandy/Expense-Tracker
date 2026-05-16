@@ -1,13 +1,3 @@
-<<<<<<< Updated upstream
-import 'package:expense_tracker/screens/register_screen.dart';
-
-=======
-<<<<<<< HEAD
-=======
-import 'package:expense_tracker/screens/register_screen.dart';
-
->>>>>>> upstream/main
->>>>>>> Stashed changes
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -21,15 +11,7 @@ class Splashscreen extends StatefulWidget {
 class _SplashscreenState extends State<Splashscreen> {
   @override
   void initState() {
-<<<<<<< Updated upstream
-    _nextScreen();
-=======
-<<<<<<< HEAD
     // _nextScreen();
-=======
-    _nextScreen();
->>>>>>> upstream/main
->>>>>>> Stashed changes
     super.initState();
   }
 
@@ -48,9 +30,6 @@ class _SplashscreenState extends State<Splashscreen> {
     );
   }
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
   // Future<void> _nextScreen() async {
   //   await Future.delayed(Duration(seconds: 3));
   //   if (!mounted) return;
@@ -77,36 +56,4 @@ class _SplashscreenState extends State<Splashscreen> {
   //     (route) => false,
   //   );
   // }
-=======
->>>>>>> Stashed changes
-  Future<void> _nextScreen() async {
-    await Future.delayed(Duration(seconds: 3));
-    if (!mounted) return;
-    Navigator.pushAndRemoveUntil(
-      // ignore: use_build_context_synchronously
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) {
-          return Registerscreen();
-        },
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1.0, 0.0),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
-            ),
-          );
-        },
-      ),
-      (route) => false,
-    );
-  }
-<<<<<<< Updated upstream
-=======
->>>>>>> upstream/main
->>>>>>> Stashed changes
 }

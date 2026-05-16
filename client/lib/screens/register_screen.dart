@@ -1,11 +1,5 @@
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
 import 'package:expense_tracker/apis/auth_services.dart';
 import 'package:expense_tracker/core/validators/validator.dart';
-=======
->>>>>>> upstream/main
->>>>>>> Stashed changes
 import 'package:expense_tracker/screens/hidden_drawer.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -175,31 +169,9 @@ class _RegisterscreenState extends State<Registerscreen> {
                             controller: emailController,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
                             validator: (value) =>
                                 Validator.emailValidator(value),
                             keyboardType: TextInputType.emailAddress,
-=======
->>>>>>> Stashed changes
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter email';
-                              }
-                              String pattern =
-                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
-                              RegExp regex = RegExp(pattern);
-
-                              if (!regex.hasMatch(value)) {
-                                return 'Enter a valid email';
-                              }
-                              return null;
-                            },
-<<<<<<< Updated upstream
-=======
->>>>>>> upstream/main
->>>>>>> Stashed changes
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(
                                 color: Colors.red,
@@ -244,26 +216,8 @@ class _RegisterscreenState extends State<Registerscreen> {
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             keyboardType: TextInputType.visiblePassword,
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
                             validator: (value) =>
                                 Validator.passwordValidator(value),
-=======
->>>>>>> Stashed changes
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter password';
-                              }
-                              if (value.length < 6) {
-                                return 'Password must be at least 6 characters';
-                              }
-                              return null;
-                            },
-<<<<<<< Updated upstream
-=======
->>>>>>> upstream/main
->>>>>>> Stashed changes
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(
                                 color: Colors.red,
@@ -320,12 +274,6 @@ class _RegisterscreenState extends State<Registerscreen> {
                           SizedBox(height: 60),
 
                           ElevatedButton(
-<<<<<<< Updated upstream
-                            onPressed: () {
-                              if (formKey.currentState!.validate()) {
-                                _nextScreen();
-=======
-<<<<<<< HEAD
                             onPressed: () async {
                               if (formKey.currentState!.validate()) {
                                 String email = emailController.text.trim();
@@ -349,12 +297,6 @@ class _RegisterscreenState extends State<Registerscreen> {
                                 } else {
                                   _showerror(success['message']);
                                 }
-=======
-                            onPressed: () {
-                              if (formKey.currentState!.validate()) {
-                                _nextScreen();
->>>>>>> upstream/main
->>>>>>> Stashed changes
                                 formKey.currentState!.reset();
                                 FocusScope.of(context).unfocus();
                               }
@@ -438,18 +380,6 @@ class _RegisterscreenState extends State<Registerscreen> {
   }
 
   void _nextScreen() async {
-<<<<<<< Updated upstream
-    _showLoadingDialog(context);
-    await Future.delayed(const Duration(seconds: 3), () {});
-
-=======
-<<<<<<< HEAD
-=======
-    _showLoadingDialog(context);
-    await Future.delayed(const Duration(seconds: 3), () {});
-
->>>>>>> upstream/main
->>>>>>> Stashed changes
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
@@ -474,13 +404,7 @@ class _RegisterscreenState extends State<Registerscreen> {
 
   void _showLoadingDialog(BuildContext context) {
     showDialog(
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
       barrierDismissible: false,
-=======
->>>>>>> upstream/main
->>>>>>> Stashed changes
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -501,9 +425,6 @@ class _RegisterscreenState extends State<Registerscreen> {
       },
     );
   }
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
 
   void _showerror(String error) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -523,7 +444,4 @@ class _RegisterscreenState extends State<Registerscreen> {
       ),
     );
   }
-=======
->>>>>>> upstream/main
->>>>>>> Stashed changes
 }

@@ -79,9 +79,11 @@ class AuthController extends BaseApiController
 
         $model = new UserModel();
         $user  = $model->findByEmail($this->request->getVar('email'));
-
-        if (! $user || ! password_verify($this->request->getVar('password'), $user['password_hash'])) {
-            return $this->error('Invalid credentials.', ResponseInterface::HTTP_UNAUTHORIZED);
+        if(! $user){
+            return $this->error('email does not match.', ResponseInterface::HTTP_UNAUTHORIZED);
+        }
+        if (! password_verify($this->request->getVar('password'), $user['password_hash'])) {
+            return $this->error('password does not match.', ResponseInterface::HTTP_UNAUTHORIZED);
         }
 
         $token = JwtHelper::encode(['sub' => $user['id']]);

@@ -80,8 +80,6 @@ class DBHelper {
     return result.map((e) => Chartdata.fromMap(e)).toList();
   }
 
-=======
->>>>>>> upstream/main
   // UPDATE
   Future<int> updateData(Chartdata data) async {
     final db = await instance.database;

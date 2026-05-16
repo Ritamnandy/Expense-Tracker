@@ -3,7 +3,6 @@ import 'package:expense_tracker/models/init_shered_pref.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
 
 import 'package:expense_tracker/provider/theme_provider.dart';
-<<<<<<< HEAD
 import 'package:expense_tracker/screens/hidden_drawer.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
 import 'package:expense_tracker/screens/splash_screen.dart';
@@ -31,7 +30,7 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
@@ -50,8 +49,6 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    print(width);
-    print(height);
     final themeProvider = Provider.of<ThemeProvider>(context);
     return ScreenUtilInit(
       designSize: Size(width, height),

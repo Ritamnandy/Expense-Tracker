@@ -38,15 +38,7 @@ class _ExpensepageState extends State<Expensepage> {
       key: formKey,
       child: Column(
         children: [
-<<<<<<< Updated upstream
-          const SizedBox(height: 18),
-=======
-<<<<<<< HEAD
           const SizedBox(height: 5),
-=======
-          const SizedBox(height: 18),
->>>>>>> upstream/main
->>>>>>> Stashed changes
           TextFormField(
             controller: amountController,
             autovalidateMode: AutovalidateMode.onUserInteractionIfError,

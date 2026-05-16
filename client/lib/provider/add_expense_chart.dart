@@ -25,12 +25,6 @@ class ExpenseAndIncomeChart extends ChangeNotifier {
       isExpense: isExpense,
       date: DateTime.now().toString().split(' ')[0],
     );
-<<<<<<< Updated upstream
-    await DBHelper.instance.insertData(data);
-
-    _list.add(data);
-=======
-<<<<<<< HEAD
 
     int id = await DBHelper.instance.insertData(data);
 
@@ -45,12 +39,6 @@ class ExpenseAndIncomeChart extends ChangeNotifier {
 
     _list.add(newData);
 
-=======
-    await DBHelper.instance.insertData(data);
-
-    _list.add(data);
->>>>>>> upstream/main
->>>>>>> Stashed changes
     notifyListeners();
   }
 
@@ -61,10 +49,6 @@ class ExpenseAndIncomeChart extends ChangeNotifier {
       _list = data;
     } else {
       _list = [];
-<<<<<<< Updated upstream
-      notifyListeners();
-=======
-<<<<<<< HEAD
     }
     notifyListeners();
   }
@@ -75,10 +59,6 @@ class ExpenseAndIncomeChart extends ChangeNotifier {
       _list = data;
     } else {
       _list = [];
-=======
-      notifyListeners();
->>>>>>> upstream/main
->>>>>>> Stashed changes
     }
     notifyListeners();
   }

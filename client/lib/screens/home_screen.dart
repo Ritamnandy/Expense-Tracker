@@ -1,13 +1,7 @@
 import 'package:expense_tracker/pages/expense_page.dart';
 import 'package:expense_tracker/pages/income_page.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
 import 'package:expense_tracker/screens/all_transactions.dart';
-=======
->>>>>>> upstream/main
->>>>>>> Stashed changes
 
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
@@ -162,36 +156,16 @@ class _HomescreenState extends State<Homescreen> {
               ),
             ),
             body: SingleChildScrollView(
-<<<<<<< Updated upstream
-              scrollDirection: Axis.vertical,
-
-=======
-<<<<<<< HEAD
-=======
-              scrollDirection: Axis.vertical,
-
->>>>>>> upstream/main
->>>>>>> Stashed changes
               child:
                   Column(
                     children: [
                       Container(
-<<<<<<< Updated upstream
-                        padding: const EdgeInsets.all(20),
-                        height: 340,
-=======
-<<<<<<< HEAD
                         padding: const EdgeInsets.only(
                           top: 20,
                           left: 20,
                           right: 20,
                         ),
                         height: 319,
-=======
-                        padding: const EdgeInsets.all(20),
-                        height: 340,
->>>>>>> upstream/main
->>>>>>> Stashed changes
                         width: double.infinity,
                         // color: Colors.red,
                         child: TabBarView(
@@ -199,36 +173,16 @@ class _HomescreenState extends State<Homescreen> {
                         ),
                       ),
                       Container(
-<<<<<<< Updated upstream
-                        // margin: const EdgeInsets.only(top: 10),
-                        padding: const EdgeInsets.all(15),
-                        height: 480,
-=======
-<<<<<<< HEAD
                         // margin: const EdgeInsets.only(top: 310),
                         padding: const EdgeInsets.all(15),
                         height: 420,
-=======
-                        // margin: const EdgeInsets.only(top: 10),
-                        padding: const EdgeInsets.all(15),
-                        height: 480,
->>>>>>> upstream/main
->>>>>>> Stashed changes
                         width: double.infinity,
                         decoration: BoxDecoration(
                           // color: Colors.red,
                           borderRadius: BorderRadius.circular(20.r),
                         ),
                         child: Column(
-<<<<<<< Updated upstream
-                          spacing: 70,
-=======
-<<<<<<< HEAD
                           spacing: 40,
-=======
-                          spacing: 70,
->>>>>>> upstream/main
->>>>>>> Stashed changes
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -312,15 +266,7 @@ class _HomescreenState extends State<Homescreen> {
                               ],
                             ),
                             CircularPercentIndicator(
-<<<<<<< Updated upstream
-                              radius: 160.0,
-=======
-<<<<<<< HEAD
                               radius: 150.0,
-=======
-                              radius: 160.0,
->>>>>>> upstream/main
->>>>>>> Stashed changes
                               lineWidth: 40.0,
                               animation: true,
                               animationDuration: 1200,
@@ -379,15 +325,7 @@ class _HomescreenState extends State<Homescreen> {
                         ),
                       ),
                       Container(
-<<<<<<< Updated upstream
-                        margin: const EdgeInsets.only(top: 20),
-=======
-<<<<<<< HEAD
                         // margin: const EdgeInsets.only(top: 720),
-=======
-                        margin: const EdgeInsets.only(top: 20),
->>>>>>> upstream/main
->>>>>>> Stashed changes
                         padding: const EdgeInsets.all(15),
                         height: 80,
                         width: double.infinity,
@@ -397,13 +335,6 @@ class _HomescreenState extends State<Homescreen> {
                           children: [
                             Text(
                               "Recent Transactions",
-<<<<<<< Updated upstream
-                              style: Theme.of(
-                                context,
-                              ).textTheme.headlineSmall?.copyWith(),
-                            ),
-=======
-<<<<<<< HEAD
                               style: Theme.of(context).textTheme.headlineSmall
                                   ?.copyWith(fontSize: 21.sp),
                             ),
@@ -420,22 +351,6 @@ class _HomescreenState extends State<Homescreen> {
                                         context,
                                       ).colorScheme.primary,
                                     ),
-=======
-                              style: Theme.of(
-                                context,
-                              ).textTheme.headlineSmall?.copyWith(),
-                            ),
->>>>>>> Stashed changes
-                            IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.refresh,
-                                color: Theme.of(context).colorScheme.primary,
-                                size: 35.sp,
-<<<<<<< Updated upstream
-=======
->>>>>>> upstream/main
->>>>>>> Stashed changes
                               ),
                             ),
                           ],
@@ -445,88 +360,49 @@ class _HomescreenState extends State<Homescreen> {
                       ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-<<<<<<< Updated upstream
-                        itemCount: chartProvider.list.length,
-=======
-<<<<<<< HEAD
                         itemCount: chartProvider.list.length > 6
                             ? 6
                             : chartProvider.list.length,
->>>>>>> Stashed changes
                         itemBuilder: (context, index) {
-                          if (chartProvider.list.isEmpty) {
-                            return Text("Data not entry");
+                          final sortedList = [...chartProvider.list];
+
+                          sortedList.sort((a, b) => b.id!.compareTo(a.id!));
+                          DateTime date = DateTime.parse(
+                            sortedList[index].date,
+                          );
+                          String formattedDate = DateFormat(
+                            'MMM dd, yyyy',
+                          ).format(date);
+                          if (sortedList.isEmpty) {
+                            return Center(child: Text("Data not entry"));
                           }
                           return ListTile(
-<<<<<<< Updated upstream
-=======
                             subtitle: Text(formattedDate),
-=======
-                        itemCount: chartProvider.list.length,
-                        itemBuilder: (context, index) {
-                          if (chartProvider.list.isEmpty) {
-                            return Text("Data not entry");
-                          }
-                          return ListTile(
->>>>>>> upstream/main
->>>>>>> Stashed changes
                             leading: Container(
                               height: 35,
                               width: 35,
                               decoration: BoxDecoration(
-<<<<<<< Updated upstream
-                                color: chartProvider.list[index].isExpense
-=======
-<<<<<<< HEAD
                                 color: sortedList[index].isExpense
-=======
-                                color: chartProvider.list[index].isExpense
->>>>>>> upstream/main
->>>>>>> Stashed changes
                                     ? Theme.of(context).colorScheme.secondary
                                     : Theme.of(context).colorScheme.primary,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Icon(
-<<<<<<< Updated upstream
-                                chartProvider.list[index].isExpense
-=======
-<<<<<<< HEAD
                                 sortedList[index].isExpense
-=======
-                                chartProvider.list[index].isExpense
->>>>>>> upstream/main
->>>>>>> Stashed changes
                                     ? Icons.arrow_downward
                                     : Icons.arrow_upward,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             title: Text(
-<<<<<<< Updated upstream
-                              chartProvider.list[index].purpose,
-=======
-<<<<<<< HEAD
                               sortedList[index].purpose,
-=======
-                              chartProvider.list[index].purpose,
->>>>>>> upstream/main
->>>>>>> Stashed changes
                               style: TextStyle(
                                 fontSize: 17.sp,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             trailing: Text(
-<<<<<<< Updated upstream
-                              '$currencySymbol ${chartProvider.list[index].amount.toStringAsFixed(2)}',
-=======
-<<<<<<< HEAD
                               '$currencySymbol ${sortedList[index].amount.toStringAsFixed(2)}',
-=======
-                              '$currencySymbol ${chartProvider.list[index].amount.toStringAsFixed(2)}',
->>>>>>> upstream/main
->>>>>>> Stashed changes
                               style: TextStyle(
                                 fontSize: 17.sp,
                                 fontWeight: FontWeight.bold,
@@ -535,37 +411,12 @@ class _HomescreenState extends State<Homescreen> {
                           );
                         },
                       ),
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
-
-                      Container(
-                        // margin: const EdgeInsets.only(top: 60),
-                        height: 60,
-                        width: double.infinity,
-                        decoration: BoxDecoration(color: Colors.grey),
-                        child: Center(
-                          child: Text(
-                            "Place for add..",
-                            style: Theme.of(context).textTheme.headlineSmall,
-                          ),
-                        ),
-                      ),
-<<<<<<< Updated upstream
-=======
->>>>>>> upstream/main
->>>>>>> Stashed changes
                     ],
                   ).animate().fadeIn(
                     curve: Curves.easeIn,
                     duration: const Duration(milliseconds: 1000),
                   ),
             ),
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
             bottomNavigationBar: Container(
               // margin: const EdgeInsets.only(top: 710),
               padding: const EdgeInsets.all(10),
@@ -579,9 +430,6 @@ class _HomescreenState extends State<Homescreen> {
                 ),
               ),
             ),
-=======
->>>>>>> upstream/main
->>>>>>> Stashed changes
           ),
         ),
       ),
@@ -631,9 +479,6 @@ class _HomescreenState extends State<Homescreen> {
     // ignore: use_build_context_synchronously
     await context.read<ExpenseAndIncomeChart>().searchByDate(date);
   }
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
 
   void _seeAllTransactions(String symbol) {
     Navigator.push(
@@ -658,7 +503,4 @@ class _HomescreenState extends State<Homescreen> {
       ),
     );
   }
-=======
->>>>>>> upstream/main
->>>>>>> Stashed changes
 }
