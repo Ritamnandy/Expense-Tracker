@@ -3,6 +3,8 @@ import 'package:expense_tracker/models/init_shered_pref.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
 
 import 'package:expense_tracker/provider/theme_provider.dart';
+import 'package:expense_tracker/screens/hidden_drawer.dart';
+import 'package:expense_tracker/screens/register_screen.dart';
 import 'package:expense_tracker/screens/splash_screen.dart';
 import 'package:expense_tracker/theme/apptheme.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await InitSheredPref.instance.getSharedPref();
+  await InitSheredPref.instance.getSharedPref;
   await DBHelper.instance.database;
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
@@ -56,7 +58,23 @@ class MyApp extends StatelessWidget {
             AppTheme.lightTheme.textTheme,
           ),
         ),
-        home: SafeArea(top: false, child: const Splashscreen()),
+        home: SafeArea(
+          top: false,
+          child: FutureBuilder(
+            future: InitSheredPref.instance.getToken(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Splashscreen();
+              }
+              final token = snapshot.data;
+              // print(token);
+              if (token == null) {
+                return Registerscreen();
+              }
+              return Hiddendrawer();
+            },
+          ),
+        ),
       ),
     );
   }

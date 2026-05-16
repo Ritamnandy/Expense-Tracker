@@ -1,3 +1,4 @@
+import 'package:expense_tracker/apis/auth_services.dart';
 import 'package:expense_tracker/core/validators/validator.dart';
 import 'package:expense_tracker/screens/hidden_drawer.dart';
 import 'package:expense_tracker/screens/register_screen.dart';
@@ -116,8 +117,8 @@ class _LoginscreenState extends State<Loginscreen> {
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             keyboardType: TextInputType.visiblePassword,
-                            validator: (value) =>
-                                Validator.passwordValidator(value),
+                            // validator: (value) =>
+                            //     Validator.passwordValidator(value),
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(
                                 color: Colors.red,
@@ -174,9 +175,23 @@ class _LoginscreenState extends State<Loginscreen> {
                           SizedBox(height: 60),
 
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (formKey.currentState!.validate()) {
-                                _nextScreen();
+                                String email = emailController.text.trim();
+                                String password = passwordController.text
+                                    .trim();
+                                _showLoadingDialog(context);
+                                final success = await AuthServices.login(
+                                  email: email,
+                                  password: password,
+                                );
+                                if (success) {
+                                  Navigator.pop(context);
+                                  _nextScreen();
+                                } else {
+                                  Navigator.pop(context);
+                                  _showerror();
+                                }
                                 formKey.currentState!.reset();
                                 FocusScope.of(context).unfocus();
                               }
@@ -262,10 +277,7 @@ class _LoginscreenState extends State<Loginscreen> {
     );
   }
 
-  void _nextScreen() async {
-    _showLoadingDialog(context);
-    await Future.delayed(const Duration(seconds: 3), () {});
-
+  void _nextScreen() {
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
@@ -308,6 +320,15 @@ class _LoginscreenState extends State<Loginscreen> {
           ),
         );
       },
+    );
+  }
+
+  void _showerror() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: ListTile(title: Text("unsuccessfull")),
+        duration: Duration(seconds: 2),
+      ),
     );
   }
 }

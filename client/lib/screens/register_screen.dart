@@ -1,3 +1,4 @@
+import 'package:expense_tracker/apis/auth_services.dart';
 import 'package:expense_tracker/core/validators/validator.dart';
 import 'package:expense_tracker/screens/hidden_drawer.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
@@ -273,9 +274,26 @@ class _RegisterscreenState extends State<Registerscreen> {
                           SizedBox(height: 60),
 
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (formKey.currentState!.validate()) {
-                                _nextScreen();
+                                String email = emailController.text.trim();
+                                String password = passwordController.text
+                                    .trim();
+                                String first_name = firstNameController.text
+                                    .trim();
+                                String last_name = lastNameController.text
+                                    .trim();
+                                final success = await AuthServices.register(
+                                  email: email,
+                                  password: password,
+                                  first_name: first_name,
+                                  last_name: last_name,
+                                );
+                                if (success) {
+                                  _nextScreen();
+                                } else {
+                                  _showerror();
+                                }
                                 formKey.currentState!.reset();
                                 FocusScope.of(context).unfocus();
                               }
@@ -404,6 +422,15 @@ class _RegisterscreenState extends State<Registerscreen> {
           ),
         );
       },
+    );
+  }
+
+  void _showerror() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: ListTile(title: Text("unsuccessfull")),
+        duration: Duration(seconds: 2),
+      ),
     );
   }
 }
