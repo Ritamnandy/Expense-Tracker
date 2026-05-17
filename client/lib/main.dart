@@ -3,7 +3,10 @@ import 'package:expense_tracker/models/init_shered_pref.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
 
 import 'package:expense_tracker/provider/theme_provider.dart';
+import 'package:expense_tracker/screens/hidden_drawer.dart';
+import 'package:expense_tracker/screens/login_screen.dart';
 import 'package:expense_tracker/screens/splash_screen.dart';
+
 import 'package:expense_tracker/theme/apptheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +15,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await InitSheredPref.instance.getSharedPref();
+  await InitSheredPref.instance.getSharedPref;
   await DBHelper.instance.database;
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
@@ -35,7 +38,6 @@ class MyApp extends StatefulWidget {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     print(width);
-    print(height);
     final themeProvider = Provider.of<ThemeProvider>(context);
     return ScreenUtilInit(
       designSize: Size(width, height),
@@ -55,7 +57,24 @@ class MyApp extends StatefulWidget {
             AppTheme.lightTheme.textTheme,
           ),
         ),
-        home: SafeArea(top: false, child: const Splashscreen()),
+        home: SafeArea(
+          top: false,
+          bottom: false,
+          child: FutureBuilder(
+            future: tokenFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Splashscreen();
+              }
+              final token = snapshot.data;
+
+              if (token == null) {
+                return Loginscreen();
+              }
+              return Hiddendrawer();
+            },
+          ),
+        ),
       ),
     );
   }

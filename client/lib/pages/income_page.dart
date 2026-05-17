@@ -38,7 +38,7 @@ class _IncomepageState extends State<Incomepage> {
       key: formKey,
       child: Column(
         children: [
-          const SizedBox(height: 18),
+          const SizedBox(height: 5),
           TextFormField(
             controller: amountController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
