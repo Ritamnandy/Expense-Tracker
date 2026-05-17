@@ -1,5 +1,3 @@
-import 'package:expense_tracker/apis/auth_services.dart';
-import 'package:expense_tracker/core/validators/validator.dart';
 import 'package:expense_tracker/screens/hidden_drawer.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -169,9 +167,19 @@ class _RegisterscreenState extends State<Registerscreen> {
                             controller: emailController,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
-                            validator: (value) =>
-                                Validator.emailValidator(value),
-                            keyboardType: TextInputType.emailAddress,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter email';
+                              }
+                              String pattern =
+                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
+                              RegExp regex = RegExp(pattern);
+
+                              if (!regex.hasMatch(value)) {
+                                return 'Enter a valid email';
+                              }
+                              return null;
+                            },
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(
                                 color: Colors.red,
@@ -216,8 +224,15 @@ class _RegisterscreenState extends State<Registerscreen> {
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             keyboardType: TextInputType.visiblePassword,
-                            validator: (value) =>
-                                Validator.passwordValidator(value),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter password';
+                              }
+                              if (value.length < 6) {
+                                return 'Password must be at least 6 characters';
+                              }
+                              return null;
+                            },
                             decoration: InputDecoration(
                               errorStyle: const TextStyle(
                                 color: Colors.red,
@@ -274,29 +289,9 @@ class _RegisterscreenState extends State<Registerscreen> {
                           SizedBox(height: 60),
 
                           ElevatedButton(
-                            onPressed: () async {
+                            onPressed: () {
                               if (formKey.currentState!.validate()) {
-                                String email = emailController.text.trim();
-                                String password = passwordController.text
-                                    .trim();
-                                String first_name = firstNameController.text
-                                    .trim();
-                                String last_name = lastNameController.text
-                                    .trim();
-                                _showLoadingDialog(context);
-                                final success = await AuthServices.register(
-                                  email: email,
-                                  password: password,
-                                  first_name: first_name,
-                                  last_name: last_name,
-                                );
-                                print("register sucess:- $success");
-                                Navigator.pop(context);
-                                if (success['success']) {
-                                  _nextScreen();
-                                } else {
-                                  _showerror(success['message']);
-                                }
+                                _nextScreen();
                                 formKey.currentState!.reset();
                                 FocusScope.of(context).unfocus();
                               }
@@ -380,6 +375,9 @@ class _RegisterscreenState extends State<Registerscreen> {
   }
 
   void _nextScreen() async {
+    _showLoadingDialog(context);
+    await Future.delayed(const Duration(seconds: 3), () {});
+
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
@@ -404,7 +402,6 @@ class _RegisterscreenState extends State<Registerscreen> {
 
   void _showLoadingDialog(BuildContext context) {
     showDialog(
-      barrierDismissible: false,
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -423,25 +420,6 @@ class _RegisterscreenState extends State<Registerscreen> {
           ),
         );
       },
-    );
-  }
-
-  void _showerror(String error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        dismissDirection: DismissDirection.horizontal,
-        padding: EdgeInsets.all(10),
-        backgroundColor: Colors.redAccent,
-        content: Center(
-          child: Text(
-            error,
-            style: Theme.of(
-              context,
-            ).textTheme.headlineMedium?.copyWith(fontSize: 18.sp),
-          ),
-        ),
-        duration: Duration(seconds: 3),
-      ),
     );
   }
 }
