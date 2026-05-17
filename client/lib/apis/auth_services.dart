@@ -7,7 +7,7 @@ class AuthServices {
   // http://localhost:8080/api/v1/auth/login
   // http://localhost:8080/api/v1/auth/register
   //192.168.1.5
-  static const baseUrl = "http://10.0.2.2:8080/api/v1/auth";
+  static const baseUrl = "http://10.75.51.65:8080/api/v1/auth";
 
   static Future<Map<String, dynamic>> register({
     required String first_name,
