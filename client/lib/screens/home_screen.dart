@@ -1,7 +1,6 @@
 import 'package:expense_tracker/pages/expense_page.dart';
 import 'package:expense_tracker/pages/income_page.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
-import 'package:expense_tracker/screens/all_transactions.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
@@ -156,16 +155,14 @@ class _HomescreenState extends State<Homescreen> {
               ),
             ),
             body: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+
               child:
                   Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.only(
-                          top: 20,
-                          left: 20,
-                          right: 20,
-                        ),
-                        height: 319,
+                        padding: const EdgeInsets.all(20),
+                        height: 340,
                         width: double.infinity,
                         // color: Colors.red,
                         child: TabBarView(
@@ -173,16 +170,16 @@ class _HomescreenState extends State<Homescreen> {
                         ),
                       ),
                       Container(
-                        // margin: const EdgeInsets.only(top: 310),
+                        // margin: const EdgeInsets.only(top: 10),
                         padding: const EdgeInsets.all(15),
-                        height: 420,
+                        height: 480,
                         width: double.infinity,
                         decoration: BoxDecoration(
                           // color: Colors.red,
                           borderRadius: BorderRadius.circular(20.r),
                         ),
                         child: Column(
-                          spacing: 40,
+                          spacing: 70,
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -266,7 +263,7 @@ class _HomescreenState extends State<Homescreen> {
                               ],
                             ),
                             CircularPercentIndicator(
-                              radius: 150.0,
+                              radius: 160.0,
                               lineWidth: 40.0,
                               animation: true,
                               animationDuration: 1200,
@@ -325,7 +322,7 @@ class _HomescreenState extends State<Homescreen> {
                         ),
                       ),
                       Container(
-                        // margin: const EdgeInsets.only(top: 720),
+                        margin: const EdgeInsets.only(top: 20),
                         padding: const EdgeInsets.all(15),
                         height: 80,
                         width: double.infinity,
@@ -335,22 +332,16 @@ class _HomescreenState extends State<Homescreen> {
                           children: [
                             Text(
                               "Recent Transactions",
-                              style: Theme.of(context).textTheme.headlineSmall
-                                  ?.copyWith(fontSize: 21.sp),
+                              style: Theme.of(
+                                context,
+                              ).textTheme.headlineSmall?.copyWith(),
                             ),
-                            TextButton(
-                              onPressed: () {
-                                _seeAllTransactions(currencySymbol);
-                              },
-                              child: Text(
-                                "See All",
-                                style: Theme.of(context).textTheme.headlineSmall
-                                    ?.copyWith(
-                                      fontSize: 18.sp,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.primary,
-                                    ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.refresh,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 35.sp,
                               ),
                             ),
                           ],
@@ -360,49 +351,37 @@ class _HomescreenState extends State<Homescreen> {
                       ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        itemCount: chartProvider.list.length > 6
-                            ? 6
-                            : chartProvider.list.length,
+                        itemCount: chartProvider.list.length,
                         itemBuilder: (context, index) {
-                          final sortedList = [...chartProvider.list];
-
-                          sortedList.sort((a, b) => b.id!.compareTo(a.id!));
-                          DateTime date = DateTime.parse(
-                            sortedList[index].date,
-                          );
-                          String formattedDate = DateFormat(
-                            'MMM dd, yyyy',
-                          ).format(date);
-                          if (sortedList.isEmpty) {
-                            return Center(child: Text("Data not entry"));
+                          if (chartProvider.list.isEmpty) {
+                            return Text("Data not entry");
                           }
                           return ListTile(
-                            subtitle: Text(formattedDate),
                             leading: Container(
                               height: 35,
                               width: 35,
                               decoration: BoxDecoration(
-                                color: sortedList[index].isExpense
+                                color: chartProvider.list[index].isExpense
                                     ? Theme.of(context).colorScheme.secondary
                                     : Theme.of(context).colorScheme.primary,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Icon(
-                                sortedList[index].isExpense
+                                chartProvider.list[index].isExpense
                                     ? Icons.arrow_downward
                                     : Icons.arrow_upward,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             title: Text(
-                              sortedList[index].purpose,
+                              chartProvider.list[index].purpose,
                               style: TextStyle(
                                 fontSize: 17.sp,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             trailing: Text(
-                              '$currencySymbol ${sortedList[index].amount.toStringAsFixed(2)}',
+                              '$currencySymbol ${chartProvider.list[index].amount.toStringAsFixed(2)}',
                               style: TextStyle(
                                 fontSize: 17.sp,
                                 fontWeight: FontWeight.bold,
@@ -411,24 +390,24 @@ class _HomescreenState extends State<Homescreen> {
                           );
                         },
                       ),
+
+                      Container(
+                        // margin: const EdgeInsets.only(top: 60),
+                        height: 60,
+                        width: double.infinity,
+                        decoration: BoxDecoration(color: Colors.grey),
+                        child: Center(
+                          child: Text(
+                            "Place for add..",
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                        ),
+                      ),
                     ],
                   ).animate().fadeIn(
                     curve: Curves.easeIn,
                     duration: const Duration(milliseconds: 1000),
                   ),
-            ),
-            bottomNavigationBar: Container(
-              // margin: const EdgeInsets.only(top: 710),
-              padding: const EdgeInsets.all(10),
-              height: 55,
-              width: double.infinity,
-              decoration: BoxDecoration(color: Colors.grey),
-              child: Center(
-                child: Text(
-                  "Place for add..",
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-              ),
             ),
           ),
         ),
@@ -478,29 +457,5 @@ class _HomescreenState extends State<Homescreen> {
   void _searchbydate(String date) async {
     // ignore: use_build_context_synchronously
     await context.read<ExpenseAndIncomeChart>().searchByDate(date);
-  }
-
-  void _seeAllTransactions(String symbol) {
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) {
-          return AllTransaction(currencySymbol: symbol);
-        },
-
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1.0, 0.0),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
-            ),
-          );
-        },
-      ),
-    );
   }
 }

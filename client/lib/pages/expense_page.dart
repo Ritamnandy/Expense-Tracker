@@ -38,7 +38,7 @@ class _ExpensepageState extends State<Expensepage> {
       key: formKey,
       child: Column(
         children: [
-          const SizedBox(height: 5),
+          const SizedBox(height: 18),
           TextFormField(
             controller: amountController,
             autovalidateMode: AutovalidateMode.onUserInteractionIfError,
