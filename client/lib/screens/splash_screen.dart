@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
@@ -19,13 +20,18 @@ class _SplashscreenState extends State<Splashscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Image.asset("assets/images/logo.png", fit: BoxFit.cover)
-            .animate()
-            .blur(begin: Offset(0, 0.1), end: Offset(0, 0.5))
-            .fadeIn(
-              curve: Curves.easeIn,
-              duration: Duration(milliseconds: 600),
-            ),
+        child:
+            Image.asset(
+                  "assets/images/logo.png",
+                  fit: BoxFit.cover,
+                  width: 200.h,
+                )
+                .animate()
+                .blur(begin: Offset(0, 0.1), end: Offset(0, 0.5))
+                .fadeIn(
+                  curve: Curves.easeIn,
+                  duration: Duration(milliseconds: 600),
+                ),
       ),
     );
   }
