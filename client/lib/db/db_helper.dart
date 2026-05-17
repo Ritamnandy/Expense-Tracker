@@ -67,6 +67,19 @@ class DBHelper {
     return result.map((e) => Chartdata.fromMap(e)).toList();
   }
 
+  ///Read data by Month
+  Future<List<Chartdata>> searchByMonth(String month) async {
+    final db = await instance.database;
+
+    final result = await db.query(
+      'transactions',
+      where: 'date LIKE ?',
+      whereArgs: ['$month%'],
+    );
+
+    return result.map((e) => Chartdata.fromMap(e)).toList();
+  }
+
   // UPDATE
   Future<int> updateData(Chartdata data) async {
     final db = await instance.database;
