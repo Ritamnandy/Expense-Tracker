@@ -290,12 +290,11 @@ class _RegisterscreenState extends State<Registerscreen> {
                                   first_name: first_name,
                                   last_name: last_name,
                                 );
-                                print("register sucess:- $success");
                                 Navigator.pop(context);
-                                if (success['success']) {
+                                if (success['success'] == true) {
                                   _nextScreen();
                                 } else {
-                                  _showerror(success['message']);
+                                  _showerror(success['message'] ?? success['error'] ?? 'Registration failed');
                                 }
                                 formKey.currentState!.reset();
                                 FocusScope.of(context).unfocus();
@@ -320,11 +319,9 @@ class _RegisterscreenState extends State<Registerscreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Already have an account?",
+                      Text("Already have an account?",
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                      const SizedBox(height: 10),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
@@ -379,7 +376,7 @@ class _RegisterscreenState extends State<Registerscreen> {
     );
   }
 
-  void _nextScreen() async {
+  void _nextScreen() {
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(

@@ -186,11 +186,10 @@ class _LoginscreenState extends State<Loginscreen> {
                                   password: password,
                                 );
                                 Navigator.pop(context);
-                                // print("success response :- ${success}");
                                 if (success['success'] == true) {
                                   _nextScreen();
                                 } else {
-                                  _showerror(success['message']);
+                                  _showerror(success['message'] ?? success['error'] ?? 'Login failed');
                                   FocusScope.of(context).unfocus();
                                   formKey.currentState!.reset();
                                 }

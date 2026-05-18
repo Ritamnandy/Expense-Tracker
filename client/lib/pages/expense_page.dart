@@ -1,11 +1,12 @@
 import 'package:currency_picker/currency_picker.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Expensepage extends StatefulWidget {
-  const Expensepage({super.key});
+  /// Called after a successful submit so the parent (e.g. bottom sheet) can close.
+  final VoidCallback? onSubmitted;
+  const Expensepage({super.key, this.onSubmitted});
 
   @override
   State<Expensepage> createState() => _ExpensepageState();
@@ -31,9 +32,15 @@ class _ExpensepageState extends State<Expensepage> {
   final TextEditingController purposeController = TextEditingController();
 
   @override
+  void dispose() {
+    amountController.dispose();
+    purposeController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // ignore: non_constant_identifier_names
-    final Chartprovider = Provider.of<ExpenseAndIncomeChart>(context);
+    final chartProvider = Provider.of<ExpenseAndIncomeChart>(context);
     return Form(
       key: formKey,
       child: Column(
@@ -41,15 +48,17 @@ class _ExpensepageState extends State<Expensepage> {
           const SizedBox(height: 5),
           TextFormField(
             controller: amountController,
-            autovalidateMode: AutovalidateMode.onUserInteractionIfError,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter amount';
               }
+              if (double.tryParse(value) == null) {
+                return 'Please enter a valid amount';
+              }
               return null;
             },
-
             decoration: InputDecoration(
               errorStyle: const TextStyle(
                 color: Colors.red,
@@ -76,26 +85,23 @@ class _ExpensepageState extends State<Expensepage> {
                 minWidth: 0,
                 minHeight: 0,
               ),
-
               prefixIcon: InkWell(
                 onTap: () {
                   showCurrencyPicker(
                     context: context,
                     theme: CurrencyPickerThemeData(
                       flagSize: 30,
-                      backgroundColor: Theme.of(
-                        context,
-                      ).scaffoldBackgroundColor,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
                       bottomSheetHeight: 400,
                       titleTextStyle: Theme.of(context).textTheme.bodyMedium,
-                      subtitleTextStyle: Theme.of(context).textTheme.bodyMedium,
+                      subtitleTextStyle:
+                          Theme.of(context).textTheme.bodyMedium,
                     ),
                     showFlag: true,
                     showCurrencyCode: true,
                     showCurrencyName: true,
-
                     favorite: ['INR', 'USD'],
-
                     onSelect: (Currency currency) {
                       setState(() {
                         selectedCurrency = currency;
@@ -103,33 +109,24 @@ class _ExpensepageState extends State<Expensepage> {
                     },
                   );
                 },
-
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-
                   margin: const EdgeInsets.only(right: 10),
-
                   decoration: const BoxDecoration(
                     border: Border(right: BorderSide(color: Colors.grey)),
                   ),
-
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-
                     children: [
                       Text(
                         selectedCurrency.flag.toString(),
                         style: const TextStyle(fontSize: 18),
                       ),
-
                       const SizedBox(width: 6),
-
                       Text(
                         "${selectedCurrency.symbol} ",
-
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
-
                       const Icon(Icons.arrow_drop_down),
                     ],
                   ),
@@ -137,11 +134,10 @@ class _ExpensepageState extends State<Expensepage> {
               ),
             ),
           ),
-
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           TextFormField(
             controller: purposeController,
-            autovalidateMode: AutovalidateMode.onUserInteractionIfError,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter Purpose';
@@ -172,25 +168,31 @@ class _ExpensepageState extends State<Expensepage> {
               hint: Text('Enter Purpose', style: TextStyle(fontSize: 18.5)),
             ),
           ),
-          SizedBox(height: 30),
-
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.secondary,
+          const SizedBox(height: 30),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+              ),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  chartProvider.addIncome(
+                    purpose: purposeController.text,
+                    amount: double.parse(amountController.text),
+                    isExpense: true,
+                    currencySymbol: selectedCurrency.symbol,
+                  );
+                  formKey.currentState!.reset();
+                  FocusScope.of(context).unfocus();
+                  widget.onSubmitted?.call();
+                }
+              },
+              child: Text(
+                "Add Expense",
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
             ),
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                Chartprovider.addIncome(
-                  purpose: purposeController.text,
-                  amount: double.parse(amountController.text),
-                  isExpense: true,
-                  currencySymbol: selectedCurrency.symbol,
-                );
-                formKey.currentState!.reset();
-                FocusScope.of(context).unfocus();
-              }
-            },
-            child: Text("Submit", style: Theme.of(context).textTheme.bodyLarge),
           ),
         ],
       ),

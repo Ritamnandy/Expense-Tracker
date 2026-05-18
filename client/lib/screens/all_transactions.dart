@@ -1,3 +1,4 @@
+import 'package:expense_tracker/models/chartdata.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -35,15 +36,14 @@ class _AllTransactionState extends State<AllTransaction> {
       lastYear: 2070,
       initialYearMonth: DateTime.now(),
     );
-    late String month;
     if (selected != null) {
-      month = DateFormat('yyyy-MM').format(selected);
+      final month = DateFormat('yyyy-MM').format(selected);
       setState(() {
         currentMonth = month;
         formattedDate = DateFormat('MMMM yyyy').format(selected);
       });
+      context.read<ExpenseAndIncomeChart>().searchByMonth(month);
     }
-    context.read<ExpenseAndIncomeChart>().searchByMonth(month);
   }
 
   @override
@@ -95,55 +95,11 @@ class _AllTransactionState extends State<AllTransaction> {
 
                 chartProvider.list.isEmpty
                     ? Center(child: Lottie.asset("assets/images/notfound.json"))
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: chartProvider.list.length,
-                        itemBuilder: (context, index) {
-                          final sortedList = [...chartProvider.list];
-
-                          sortedList.sort((a, b) => b.id!.compareTo(a.id!));
-                          DateTime date = DateTime.parse(
-                            sortedList[index].date,
-                          );
-                          String formattedDate = DateFormat(
-                            'MMM dd, yyyy',
-                          ).format(date);
-
-                          return ListTile(
-                            subtitle: Text(formattedDate),
-                            leading: Container(
-                              height: 35,
-                              width: 35,
-                              decoration: BoxDecoration(
-                                color: sortedList[index].isExpense
-                                    ? Theme.of(context).colorScheme.secondary
-                                    : Theme.of(context).colorScheme.primary,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Icon(
-                                sortedList[index].isExpense
-                                    ? Icons.arrow_downward
-                                    : Icons.arrow_upward,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            title: Text(
-                              sortedList[index].purpose,
-                              style: TextStyle(
-                                fontSize: 17.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            trailing: Text(
-                              '${widget.currencySymbol} ${sortedList[index].amount.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                fontSize: 17.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          );
-                        },
+                    : _TransactionList(
+                        list: chartProvider.list,
+                        currencySymbol: widget.currencySymbol,
+                        onDelete: (id) =>
+                            context.read<ExpenseAndIncomeChart>().deleteItem(id),
                       ).animate().fadeIn(
                         curve: Curves.easeIn,
                         duration: const Duration(milliseconds: 1000),
@@ -154,6 +110,94 @@ class _AllTransactionState extends State<AllTransaction> {
               duration: const Duration(milliseconds: 1000),
             ),
       ),
+    );
+  }
+}
+
+class _TransactionList extends StatelessWidget {
+  final List<Chartdata> list;
+  final String currencySymbol;
+  final void Function(String id) onDelete;
+
+  const _TransactionList({
+    required this.list,
+    required this.currencySymbol,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final sortedList = [...list]..sort((a, b) => b.date.compareTo(a.date));
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: sortedList.length,
+      itemBuilder: (context, index) {
+        final item = sortedList[index];
+        final date = DateTime.parse(item.date);
+        final formattedDate = DateFormat('MMM dd, yyyy').format(date);
+        return Dismissible(
+          key: ValueKey(item.id),
+          direction: DismissDirection.endToStart,
+          background: Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 20),
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.redAccent,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(Icons.delete, color: Colors.white),
+          ),
+          confirmDismiss: (_) async {
+            return await showDialog<bool>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('Delete Transaction'),
+                content: const Text(
+                    'Are you sure you want to delete this transaction?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, false),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, true),
+                    child: const Text('Delete',
+                        style: TextStyle(color: Colors.red)),
+                  ),
+                ],
+              ),
+            );
+          },
+          onDismissed: (_) => onDelete(item.id!),
+          child: ListTile(
+            subtitle: Text(formattedDate),
+            leading: Container(
+              height: 35,
+              width: 35,
+              decoration: BoxDecoration(
+                color: item.isExpense
+                    ? Theme.of(context).colorScheme.secondary
+                    : Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                item.isExpense ? Icons.arrow_downward : Icons.arrow_upward,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            title: Text(
+              item.purpose,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            trailing: Text(
+              '$currencySymbol ${item.amount.toStringAsFixed(2)}',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        );
+      },
     );
   }
 }
