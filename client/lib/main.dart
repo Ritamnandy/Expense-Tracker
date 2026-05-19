@@ -14,15 +14,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:expense_tracker/provider/sync_provider.dart';
-import 'package:expense_tracker/provider/theme_provider.dart';
-import 'package:expense_tracker/screens/hidden_drawer.dart';
-import 'package:expense_tracker/screens/login_screen.dart';
-import 'package:expense_tracker/screens/splash_screen.dart';
-import 'package:expense_tracker/theme/apptheme.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
