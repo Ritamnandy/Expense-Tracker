@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 class ThemeProvider extends ChangeNotifier {
   final InitSheredPref _initSheredPref = InitSheredPref.instance;
 
-  static ThemeMode _themeMode = ThemeMode.system;
+  // Instance field (not static) — each provider instance has its own state.
+  ThemeMode _themeMode = ThemeMode.system;
   ThemeMode get themeMode => _themeMode;
 
   Future<void> toggleTheme(String theme) async {
@@ -12,32 +13,23 @@ class ThemeProvider extends ChangeNotifier {
       case 'light':
         await _initSheredPref.setTheme("light");
         break;
-
       case 'dark':
         await _initSheredPref.setTheme("dark");
         break;
-
       default:
         await _initSheredPref.setTheme("system");
     }
-
-    await loadTheme();
-    // notifyListeners();
+    await loadTheme(); // loadTheme calls notifyListeners()
   }
 
   Future<void> loadTheme() async {
-    String? theme = await _initSheredPref.getTheme();
+    final theme = await _initSheredPref.getTheme();
     switch (theme) {
       case 'light':
         _themeMode = ThemeMode.light;
         break;
-
       case 'dark':
         _themeMode = ThemeMode.dark;
-        break;
-
-      case 'system':
-        _themeMode = ThemeMode.system;
         break;
       default:
         _themeMode = ThemeMode.system;

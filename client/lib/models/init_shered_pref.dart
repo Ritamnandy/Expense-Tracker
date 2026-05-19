@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class InitSheredPref {
@@ -25,15 +27,47 @@ class InitSheredPref {
   Future<void> setToken(String token) async {
     await _prefs?.remove("token");
     await _prefs?.setString("token", token);
+    // Extract user_id from JWT payload
+    try {
+      final parts = token.split('.');
+      if (parts.length == 3) {
+        final payload = utf8.decode(base64Url.decode(parts[1]));
+        final data = jsonDecode(payload);
+        if (data['sub'] != null) {
+          await setUserId(data['sub']);
+        }
+      }
+    } catch (_) {}
   }
 
   Future<String?> getToken() async {
-    await Future.delayed(Duration(seconds: 3));
     String? value = _prefs?.getString("token");
     return value;
   }
 
   Future<void> logOut() async {
     await _prefs?.remove("token");
+    await _prefs?.remove("user_id");
+    await _prefs?.remove("last_synced_at");
+  }
+
+  /// set and get user id
+
+  Future<void> setUserId(String userId) async {
+    await _prefs?.setString("user_id", userId);
+  }
+
+  Future<String?> getUserId() async {
+    return _prefs?.getString("user_id");
+  }
+
+  /// set and get last synced at
+
+  Future<void> setLastSyncedAt(String syncedAt) async {
+    await _prefs?.setString("last_synced_at", syncedAt);
+  }
+
+  Future<String?> getLastSyncedAt() async {
+    return _prefs?.getString("last_synced_at");
   }
 }

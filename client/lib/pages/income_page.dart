@@ -1,11 +1,12 @@
 import 'package:currency_picker/currency_picker.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Incomepage extends StatefulWidget {
-  const Incomepage({super.key});
+  /// Called after a successful submit so the parent (e.g. bottom sheet) can close.
+  final VoidCallback? onSubmitted;
+  const Incomepage({super.key, this.onSubmitted});
 
   @override
   State<Incomepage> createState() => _IncomepageState();
@@ -31,9 +32,15 @@ class _IncomepageState extends State<Incomepage> {
   final TextEditingController purposeController = TextEditingController();
 
   @override
+  void dispose() {
+    amountController.dispose();
+    purposeController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // ignore: non_constant_identifier_names
-    final Chartprovider = Provider.of<ExpenseAndIncomeChart>(context);
+    final chartProvider = Provider.of<ExpenseAndIncomeChart>(context);
     return Form(
       key: formKey,
       child: Column(
@@ -47,9 +54,11 @@ class _IncomepageState extends State<Incomepage> {
               if (value == null || value.isEmpty) {
                 return 'Please enter amount';
               }
+              if (double.tryParse(value) == null) {
+                return 'Please enter a valid amount';
+              }
               return null;
             },
-
             decoration: InputDecoration(
               hintText: "Enter Amount",
               errorStyle: const TextStyle(
@@ -76,7 +85,6 @@ class _IncomepageState extends State<Incomepage> {
                 minWidth: 0,
                 minHeight: 0,
               ),
-
               prefixIcon: InkWell(
                 onTap: () {
                   showCurrencyPicker(
@@ -93,9 +101,7 @@ class _IncomepageState extends State<Incomepage> {
                     showFlag: true,
                     showCurrencyCode: true,
                     showCurrencyName: true,
-
                     favorite: ['INR', 'USD'],
-
                     onSelect: (Currency currency) {
                       setState(() {
                         selectedCurrency = currency;
@@ -103,33 +109,24 @@ class _IncomepageState extends State<Incomepage> {
                     },
                   );
                 },
-
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-
                   margin: const EdgeInsets.only(right: 10),
-
                   decoration: const BoxDecoration(
                     border: Border(right: BorderSide(color: Colors.grey)),
                   ),
-
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-
                     children: [
                       Text(
                         selectedCurrency.flag.toString(),
                         style: const TextStyle(fontSize: 18),
                       ),
-
                       const SizedBox(width: 6),
-
                       Text(
                         "${selectedCurrency.symbol} ${selectedCurrency.code}",
-
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
-
                       const Icon(Icons.arrow_drop_down),
                     ],
                   ),
@@ -137,8 +134,7 @@ class _IncomepageState extends State<Incomepage> {
               ),
             ),
           ),
-
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           TextFormField(
             controller: purposeController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -172,24 +168,28 @@ class _IncomepageState extends State<Incomepage> {
               ),
             ),
           ),
-          SizedBox(height: 30),
-
-          ElevatedButton(
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                Chartprovider.addIncome(
-                  purpose: purposeController.text,
-                  amount: double.parse(amountController.text),
-                  isExpense: false,
-                  currencySymbol: selectedCurrency.symbol,
-                );
-                // purposeController.clear();
-                // amountController.clear();
-                FocusScope.of(context).unfocus();
-                formKey.currentState!.reset();
-              }
-            },
-            child: Text("Submit", style: Theme.of(context).textTheme.bodyLarge),
+          const SizedBox(height: 30),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  chartProvider.addIncome(
+                    purpose: purposeController.text,
+                    amount: double.parse(amountController.text),
+                    isExpense: false,
+                    currencySymbol: selectedCurrency.symbol,
+                  );
+                  FocusScope.of(context).unfocus();
+                  formKey.currentState!.reset();
+                  widget.onSubmitted?.call();
+                }
+              },
+              child: Text(
+                "Add Income",
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ),
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:expense_tracker/models/chartdata.dart';
 import 'package:expense_tracker/pages/expense_page.dart';
 import 'package:expense_tracker/pages/income_page.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
@@ -23,13 +24,15 @@ class Homescreen extends StatefulWidget {
 class _HomescreenState extends State<Homescreen> {
   final now = DateTime.now();
   String time = '';
+  final _currentMonth = DateFormat('yyyy-MM').format(DateTime.now());
+  String? _selectedDate;
 
   @override
   void initState() {
     time = DateFormat('dd MMM yyyy').format(now);
     Future.microtask(() {
       // ignore: use_build_context_synchronously
-      context.read<ExpenseAndIncomeChart>().loadData();
+      context.read<ExpenseAndIncomeChart>().searchByMonth(_currentMonth);
     });
     super.initState();
   }
@@ -37,11 +40,8 @@ class _HomescreenState extends State<Homescreen> {
   @override
   Widget build(BuildContext context) {
     final chartProvider = Provider.of<ExpenseAndIncomeChart>(context);
-    // if (chartProvider.list.isEmpty) {
-    //   debugPrint("list is empty");
-    //   return Text("Empty");
-    // }
     final list = chartProvider.list;
+
     final totalIncome = list.isEmpty
         ? 0.00
         : list
@@ -50,6 +50,7 @@ class _HomescreenState extends State<Homescreen> {
                 0.0,
                 (previousValue, element) => previousValue + element.amount,
               );
+
     final totalExpense = list.isEmpty
         ? 0.00
         : list
@@ -61,13 +62,14 @@ class _HomescreenState extends State<Homescreen> {
 
     final currencySymbol = chartProvider.list.isNotEmpty
         ? chartProvider.list.first.currencySymbol
-        : '₹'; // Default to '₹' if the list is empty
+        : '₹';
+
     final safeToSpend = totalIncome - totalExpense;
     final safeToSpendPercentage = totalIncome > 0
         ? (safeToSpend / totalIncome).clamp(0.0, 1.0)
         : 0.0;
     final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
-    final daysPassed = daysInMonth - now.day;
+    final daysLeft = daysInMonth - now.day;
 
     return InkWell(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -77,9 +79,11 @@ class _HomescreenState extends State<Homescreen> {
           displacement: 100,
           strokeWidth: 3,
           onRefresh: () async {
-            await Future.delayed(const Duration(seconds: 2));
-            time = DateFormat('dd MMM yyyy').format(now);
-            await chartProvider.loadData();
+            setState(() {
+              _selectedDate = null;
+              time = DateFormat('dd MMM yyyy').format(now);
+            });
+            await chartProvider.searchByMonth(_currentMonth);
           },
           child: Scaffold(
             resizeToAvoidBottomInset: true,
@@ -92,7 +96,7 @@ class _HomescreenState extends State<Homescreen> {
                   valueListenable: widget.advancedDrawerController,
                   builder: (_, value, _) {
                     return AnimatedSwitcher(
-                      duration: Duration(milliseconds: 250),
+                      duration: const Duration(milliseconds: 250),
                       child: Semantics(
                         label: 'Menu',
                         onTapHint: 'expand drawer',
@@ -128,7 +132,6 @@ class _HomescreenState extends State<Homescreen> {
               centerTitle: true,
               bottom: TabBar(
                 dividerColor: Colors.transparent,
-
                 indicatorColor: Theme.of(context).colorScheme.primary,
                 tabs: [
                   Tab(
@@ -137,7 +140,6 @@ class _HomescreenState extends State<Homescreen> {
                       style: Theme.of(context).textTheme.headlineLarge
                           ?.copyWith(
                             fontSize: 20.sp,
-
                             fontWeight: FontWeight.w700,
                           ),
                     ),
@@ -159,6 +161,7 @@ class _HomescreenState extends State<Homescreen> {
               child:
                   Column(
                     children: [
+                      // Income / Expense form tabs
                       Container(
                         padding: const EdgeInsets.only(
                           top: 20,
@@ -167,18 +170,16 @@ class _HomescreenState extends State<Homescreen> {
                         ),
                         height: 319,
                         width: double.infinity,
-                        // color: Colors.red,
                         child: TabBarView(
-                          children: [Incomepage(), Expensepage()],
+                          children: [const Incomepage(), const Expensepage()],
                         ),
                       ),
+
+                      // Summary + circular indicator
                       Container(
-                        // margin: const EdgeInsets.only(top: 310),
                         padding: const EdgeInsets.all(15),
-                        height: 420,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          // color: Colors.red,
                           borderRadius: BorderRadius.circular(20.r),
                         ),
                         child: Column(
@@ -187,84 +188,79 @@ class _HomescreenState extends State<Homescreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SizedBox(
-                                  height: 50,
-                                  width: 180.w,
-                                  child: Center(
-                                    child: ListTile(
-                                      leading: Container(
-                                        height: 35,
-                                        width: 35,
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.primary,
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                        ),
-                                        child: Icon(
-                                          Icons.arrow_upward,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                Expanded(
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                    ),
+                                    leading: Container(
+                                      height: 35,
+                                      width: 35,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                      title: Text(
-                                        "Income",
-                                        style: TextStyle(
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      child: const Icon(
+                                        Icons.arrow_upward,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      subtitle: Text(
-                                        '$currencySymbol ${totalIncome.toStringAsFixed(2)}',
-                                        style: TextStyle(
-                                          fontSize: 17.sp,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                    ),
+                                    title: Text(
+                                      "Income",
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      '$currencySymbol ${totalIncome.toStringAsFixed(0)}',
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 50,
-                                  width: 180.w,
-                                  child: Center(
-                                    child: ListTile(
-                                      leading: Container(
-                                        height: 35,
-                                        width: 35,
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.secondary,
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                        ),
-                                        child: Icon(
-                                          Icons.arrow_downward,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                Expanded(
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                    ),
+                                    leading: Container(
+                                      height: 35,
+                                      width: 35,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.secondary,
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                      title: Text(
-                                        "Expense",
-                                        style: TextStyle(
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      child: const Icon(
+                                        Icons.arrow_downward,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      subtitle: Text(
-                                        '$currencySymbol ${totalExpense.toStringAsFixed(2)}',
-                                        style: TextStyle(
-                                          fontSize: 17.sp,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                    ),
+                                    title: Text(
+                                      "Expense",
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      '$currencySymbol ${totalExpense.toStringAsFixed(0)}',
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
+
                             CircularPercentIndicator(
                               radius: 150.0,
                               lineWidth: 40.0,
@@ -272,7 +268,6 @@ class _HomescreenState extends State<Homescreen> {
                               animationDuration: 1200,
                               circularStrokeCap: CircularStrokeCap.round,
                               percent: safeToSpendPercentage,
-
                               center: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -286,9 +281,7 @@ class _HomescreenState extends State<Homescreen> {
                                           fontWeight: FontWeight.w600,
                                         ),
                                   ),
-
-                                  SizedBox(height: 10),
-
+                                  const SizedBox(height: 10),
                                   Text(
                                     "$currencySymbol ${safeToSpend.toStringAsFixed(2)}",
                                     style: Theme.of(context)
@@ -299,11 +292,9 @@ class _HomescreenState extends State<Homescreen> {
                                           fontWeight: FontWeight.w600,
                                         ),
                                   ),
-
-                                  SizedBox(height: 8),
-
+                                  const SizedBox(height: 8),
                                   Text(
-                                    "$daysPassed days left",
+                                    "$daysLeft days left",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineMedium
@@ -324,12 +315,12 @@ class _HomescreenState extends State<Homescreen> {
                           ],
                         ),
                       ),
+
+                      // Recent transactions header
                       Container(
-                        // margin: const EdgeInsets.only(top: 720),
                         padding: const EdgeInsets.all(15),
                         height: 80,
                         width: double.infinity,
-
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -339,9 +330,8 @@ class _HomescreenState extends State<Homescreen> {
                                   ?.copyWith(fontSize: 21.sp),
                             ),
                             TextButton(
-                              onPressed: () {
-                                _seeAllTransactions(currencySymbol);
-                              },
+                              onPressed: () =>
+                                  _seeAllTransactions(currencySymbol),
                               child: Text(
                                 "See All",
                                 style: Theme.of(context).textTheme.headlineSmall
@@ -357,59 +347,17 @@ class _HomescreenState extends State<Homescreen> {
                         ),
                       ),
 
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: chartProvider.list.length > 6
-                            ? 6
-                            : chartProvider.list.length,
-                        itemBuilder: (context, index) {
-                          final sortedList = [...chartProvider.list];
-
-                          sortedList.sort((a, b) => b.id!.compareTo(a.id!));
-                          DateTime date = DateTime.parse(
-                            sortedList[index].date,
-                          );
-                          String formattedDate = DateFormat(
-                            'MMM dd, yyyy',
-                          ).format(date);
-                          if (sortedList.isEmpty) {
-                            return Center(child: Text("Data not entry"));
-                          }
-                          return ListTile(
-                            subtitle: Text(formattedDate),
-                            leading: Container(
-                              height: 35,
-                              width: 35,
-                              decoration: BoxDecoration(
-                                color: sortedList[index].isExpense
-                                    ? Theme.of(context).colorScheme.secondary
-                                    : Theme.of(context).colorScheme.primary,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Icon(
-                                sortedList[index].isExpense
-                                    ? Icons.arrow_downward
-                                    : Icons.arrow_upward,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            title: Text(
-                              sortedList[index].purpose,
-                              style: TextStyle(
-                                fontSize: 17.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            trailing: Text(
-                              '$currencySymbol ${sortedList[index].amount.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                fontSize: 17.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          );
-                        },
+                      // Recent list with swipe-to-delete
+                      _RecentTransactionList(
+                        list: _selectedDate != null
+                            ? chartProvider.list
+                                  .where((e) => e.date == _selectedDate)
+                                  .toList()
+                            : chartProvider.list,
+                        currencySymbol: currencySymbol,
+                        onDelete: (id) => context
+                            .read<ExpenseAndIncomeChart>()
+                            .deleteItem(id),
                       ),
                     ],
                   ).animate().fadeIn(
@@ -417,12 +365,13 @@ class _HomescreenState extends State<Homescreen> {
                     duration: const Duration(milliseconds: 1000),
                   ),
             ),
+
+            // AdMob placeholder
             bottomNavigationBar: Container(
-              // margin: const EdgeInsets.only(top: 710),
               padding: const EdgeInsets.all(10),
               height: 55,
               width: double.infinity,
-              decoration: BoxDecoration(color: Colors.grey),
+              decoration: const BoxDecoration(color: Colors.grey),
               child: Center(
                 child: Text(
                   "Place for add..",
@@ -437,7 +386,7 @@ class _HomescreenState extends State<Homescreen> {
   }
 
   Future<void> _selectTime(BuildContext context) async {
-    DateTime? datetime = await showDatePicker(
+    final datetime = await showDatePicker(
       barrierColor: Colors.black45,
       context: context,
       firstDate: DateTime(1980),
@@ -468,39 +417,142 @@ class _HomescreenState extends State<Homescreen> {
       },
     );
     if (datetime != null) {
-      _searchbydate(datetime.toString().split(' ')[0]);
       setState(() {
+        _selectedDate = datetime.toString().split(' ')[0];
         time = DateFormat('dd MMM yyyy').format(datetime);
       });
     }
-  }
-
-  void _searchbydate(String date) async {
-    // ignore: use_build_context_synchronously
-    await context.read<ExpenseAndIncomeChart>().searchByDate(date);
   }
 
   void _seeAllTransactions(String symbol) {
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) {
-          return AllTransaction(currencySymbol: symbol);
-        },
-
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1.0, 0.0),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            AllTransaction(currencySymbol: symbol),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1.0, 0.0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              ),
             ),
-          );
-        },
       ),
+    );
+  }
+}
+
+// ── Recent Transaction List ──────────────────────────────────────────────────
+
+class _RecentTransactionList extends StatelessWidget {
+  final List<Chartdata> list;
+  final String currencySymbol;
+  final void Function(String id) onDelete;
+
+  const _RecentTransactionList({
+    required this.list,
+    required this.currencySymbol,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final sortedList = [...list]..sort((a, b) => b.date.compareTo(a.date));
+    final recentList = sortedList.take(6).toList();
+
+    if (recentList.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: Center(
+          child: Text(
+            "No transactions yet",
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Colors.grey,
+              fontSize: 16.sp,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: recentList.length,
+      itemBuilder: (context, index) {
+        final item = recentList[index];
+        final date = DateTime.parse(item.date);
+        final formattedDate = DateFormat('MMM dd, yyyy').format(date);
+
+        return Dismissible(
+          key: ValueKey(item.id),
+          direction: DismissDirection.endToStart,
+          background: Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 20),
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.redAccent,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(Icons.delete, color: Colors.white),
+          ),
+          confirmDismiss: (_) async {
+            return await showDialog<bool>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text("Delete Transaction"),
+                content: const Text(
+                  "Are you sure you want to delete this transaction?",
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, false),
+                    child: const Text("Cancel"),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, true),
+                    child: const Text(
+                      "Delete",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+          onDismissed: (_) => onDelete(item.id!),
+          child: ListTile(
+            subtitle: Text(formattedDate),
+            leading: Container(
+              height: 35,
+              width: 35,
+              decoration: BoxDecoration(
+                color: item.isExpense
+                    ? Theme.of(context).colorScheme.secondary
+                    : Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                item.isExpense ? Icons.arrow_downward : Icons.arrow_upward,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            title: Text(
+              item.purpose,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            trailing: Text(
+              '$currencySymbol ${item.amount.toStringAsFixed(2)}',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        );
+      },
     );
   }
 }

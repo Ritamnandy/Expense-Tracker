@@ -54,13 +54,10 @@ class _HiddendrawerState extends State<Hiddendrawer> {
       controller: _advancedDrawerController,
       animationCurve: Curves.easeInOut,
       animationDuration: const Duration(milliseconds: 500),
-      animateChildDecoration: true,
+      animateChildDecoration: false,
       rtlOpening: false,
       openRatio: 0.60,
       disabledGestures: false,
-      childDecoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-      ),
       drawer: SafeArea(
         top: false,
         child: Column(

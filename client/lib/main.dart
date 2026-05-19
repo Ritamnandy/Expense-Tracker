@@ -1,33 +1,7 @@
-import 'package:expense_tracker/db/db_helper.dart';
-import 'package:expense_tracker/models/init_shered_pref.dart';
-import 'package:expense_tracker/provider/add_expense_chart.dart';
-
-import 'package:expense_tracker/provider/theme_provider.dart';
-import 'package:expense_tracker/screens/hidden_drawer.dart';
-import 'package:expense_tracker/screens/login_screen.dart';
-import 'package:expense_tracker/screens/splash_screen.dart';
-
-import 'package:expense_tracker/theme/apptheme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await InitSheredPref.instance.getSharedPref;
-  await DBHelper.instance.database;
-  final themeProvider = ThemeProvider();
-  await themeProvider.loadTheme();
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (context) => ExpenseAndIncomeChart()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+void main() {
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -40,53 +14,72 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late Future<String?> tokenFuture;
   @override
-  void initState() {
-    tokenFuture = InitSheredPref.instance.getToken();
-    super.initState();
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      // This call to setState tells the Flutter framework that something has
+      // changed in this State, which causes it to rerun the build method below
+      // so that the display can reflect the updated values. If we changed
+      // _counter without calling setState(), then the build method would not be
+      // called again, and so nothing would appear to happen.
+      _counter++;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    return ScreenUtilInit(
-      designSize: Size(width, height),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        themeAnimationCurve: Curves.easeIn,
-        title: 'Expense Tracker',
-
-        themeMode: themeProvider.themeMode,
-        darkTheme: AppTheme.darkTheme.copyWith(
-          textTheme: GoogleFonts.poppinsTextTheme(AppTheme.darkTheme.textTheme),
+    // This method is rerun every time setState is called, for instance as done
+    // by the _incrementCounter method above.
+    //
+    // The Flutter framework has been optimized to make rerunning build methods
+    // fast, so that you can just rebuild anything that needs updating rather
+    // than having to individually change instances of widgets.
+    return Scaffold(
+      appBar: AppBar(
+        // TRY THIS: Try changing the color here to a specific color (to
+        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+        // change color while the other colors stay the same.
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.title),
+      ),
+      body: Center(
+        // Center is a layout widget. It takes a single child and positions it
+        // in the middle of the parent.
+        child: Column(
+          // Column is also a layout widget. It takes a list of children and
+          // arranges them vertically. By default, it sizes itself to fit its
+          // children horizontally, and tries to be as tall as its parent.
+          //
+          // Column has various properties to control how it sizes itself and
+          // how it positions its children. Here we use mainAxisAlignment to
+          // center the children vertically; the main axis here is the vertical
+          // axis because Columns are vertical (the cross axis would be
+          // horizontal).
+          //
+          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+          // action in the IDE, or press "p" in the console), to see the
+          // wireframe for each widget.
+          mainAxisAlignment: .center,
+          children: [
+            const Text('You have pushed the button this many times:'),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ],
         ),
-        theme: AppTheme.lightTheme.copyWith(
-          textTheme: GoogleFonts.poppinsTextTheme(
-            AppTheme.lightTheme.textTheme,
-          ),
-        ),
-        home: SafeArea(
-          top: false,
-          bottom: false,
-          child: FutureBuilder(
-            future: tokenFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Splashscreen();
-              }
-              final token = snapshot.data;
-
-              if (token == null) {
-                return Loginscreen();
-              }
-              return Hiddendrawer();
-            },
-          ),
-        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
       ),
     );
   }
