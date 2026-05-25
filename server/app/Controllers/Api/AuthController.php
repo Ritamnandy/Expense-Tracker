@@ -77,13 +77,18 @@ class AuthController extends BaseApiController
             return $this->error('Validation failed.', ResponseInterface::HTTP_UNPROCESSABLE_ENTITY, $this->validator->getErrors());
         }
 
+        $throttler = \Config\Services::throttler();
+        if ($throttler->check($this->request->getIPAddress(), 5, MINUTE) === false) {
+            return $this->error('Too many login attempts. Please try again later.', ResponseInterface::HTTP_TOO_MANY_REQUESTS);
+        }
+
         $model = new UserModel();
         $user  = $model->findByEmail($this->request->getVar('email'));
         if(! $user){
-            return $this->error('email does not match.', ResponseInterface::HTTP_UNAUTHORIZED);
+            return $this->error('Invalid credentials.', ResponseInterface::HTTP_UNAUTHORIZED);
         }
         if (! password_verify($this->request->getVar('password'), $user['password_hash'])) {
-            return $this->error('password does not match.', ResponseInterface::HTTP_UNAUTHORIZED);
+            return $this->error('Invalid credentials.', ResponseInterface::HTTP_UNAUTHORIZED);
         }
 
         $token = JwtHelper::encode(['sub' => $user['id']]);

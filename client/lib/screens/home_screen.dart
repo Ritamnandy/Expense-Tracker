@@ -38,30 +38,14 @@ class _HomescreenState extends State<Homescreen> {
     super.initState();
   }
 
-  @override
   Widget build(BuildContext context) {
     final imageProvider = Provider.of<ImageController>(context);
     final image = imageProvider.imageFile;
     final chartProvider = Provider.of<ExpenseAndIncomeChart>(context);
     final list = chartProvider.list;
 
-    final totalIncome = list.isEmpty
-        ? 0.00
-        : list
-              .where((element) => element.isExpense == false)
-              .fold(
-                0.0,
-                (previousValue, element) => previousValue + element.amount,
-              );
-
-    final totalExpense = list.isEmpty
-        ? 0.00
-        : list
-              .where((element) => element.isExpense == true)
-              .fold(
-                0.0,
-                (previousValue, element) => previousValue + element.amount,
-              );
+    final totalIncome = chartProvider.monthlyIncome;
+    final totalExpense = chartProvider.monthlyExpense;
 
     final currencySymbol = chartProvider.list.isNotEmpty
         ? chartProvider.list.first.currencySymbol
@@ -376,19 +360,6 @@ class _HomescreenState extends State<Homescreen> {
                   ),
             ),
 
-            // AdMob placeholder
-            bottomNavigationBar: Container(
-              padding: const EdgeInsets.all(10),
-              height: 55,
-              width: double.infinity,
-              decoration: const BoxDecoration(color: Colors.grey),
-              child: Center(
-                child: Text(
-                  "Place for add..",
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-              ),
-            ),
           ),
         ),
       ),
@@ -434,8 +405,8 @@ class _HomescreenState extends State<Homescreen> {
     }
   }
 
-  void _seeAllTransactions(String symbol) {
-    Navigator.push(
+  void _seeAllTransactions(String symbol) async {
+    await Navigator.push(
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
@@ -453,6 +424,14 @@ class _HomescreenState extends State<Homescreen> {
             ),
       ),
     );
+    // Restore home screen state when returning
+    if (mounted) {
+      setState(() {
+        _selectedDate = null;
+        time = DateFormat('dd MMM yyyy').format(now);
+      });
+      await context.read<ExpenseAndIncomeChart>().searchByMonth(_currentMonth);
+    }
   }
 }
 

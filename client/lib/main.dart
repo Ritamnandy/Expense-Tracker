@@ -25,12 +25,10 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => ImageController()),
-        ChangeNotifierProvider(create: (context) => ExpenseAndIncomeChart()),
         // Reuse the already-loaded instance — no second ThemeProvider created
         ChangeNotifierProvider<ThemeProvider>.value(value: themeProvider),
-        ChangeNotifierProvider(create: (_) => ExpenseAndIncomeChart()),
+        ChangeNotifierProvider(create: (context) => ExpenseAndIncomeChart()),
         ChangeNotifierProvider(
           create: (_) {
             final sp = SyncProvider();
@@ -62,12 +60,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-
     final themeProvider = Provider.of<ThemeProvider>(context);
     return ScreenUtilInit(
-      designSize: Size(width, height),
+      designSize: const Size(390, 844),
       minTextAdapt: true,
       splitScreenMode: true,
       child: MaterialApp(

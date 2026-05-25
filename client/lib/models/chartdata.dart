@@ -40,7 +40,7 @@ class Chartdata {
   factory Chartdata.fromMap(Map<String, dynamic> map) {
     return Chartdata(
       id: map['id'],
-      purpose: map['purpose'],
+      purpose: map['purpose'] ?? 'Unknown',
       amount: map['amount'],
       currencySymbol: map['currencySymbol'],
       isExpense: map['isExpense'] == 1,
