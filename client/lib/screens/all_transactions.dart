@@ -5,7 +5,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:year_month_picker/year_month_picker.dart';
 
@@ -94,7 +93,12 @@ class _AllTransactionState extends State<AllTransaction> {
                 const SizedBox(height: 5),
 
                 chartProvider.list.isEmpty
-                    ? Center(child: Lottie.asset("assets/images/notfound.json"))
+                    ? Center(
+                        child: Text(
+                          "No data found",
+                          style: TextStyle(fontSize: 20.sp),
+                        ),
+                      )
                     : _TransactionList(
                         list: chartProvider.list,
                         currencySymbol: widget.currencySymbol,

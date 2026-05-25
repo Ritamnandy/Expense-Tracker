@@ -1,15 +1,10 @@
-import 'package:expense_tracker/models/init_shered_pref.dart';
-import 'package:expense_tracker/provider/image_provider.dart';
 import 'package:expense_tracker/screens/help_screen.dart';
 import 'package:expense_tracker/screens/home_screen.dart';
-import 'package:expense_tracker/screens/login_screen.dart';
-import 'package:expense_tracker/screens/notifications.dart';
 import 'package:expense_tracker/screens/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 
 class Hiddendrawer extends StatefulWidget {
   const Hiddendrawer({super.key});
@@ -20,45 +15,33 @@ class Hiddendrawer extends StatefulWidget {
 
 class _HiddendrawerState extends State<Hiddendrawer> {
   final _advancedDrawerController = AdvancedDrawerController();
-  List<Widget> pages = [];
   int currentIndex = 0;
 
-  @override
-  void initState() {
-    pages = [
+  List<Widget> get _pages {
+    return [
       Homescreen(advancedDrawerController: _advancedDrawerController),
-      Notificationscreen(advancedDrawerController: _advancedDrawerController),
       Helpandsupport(advancedDrawerController: _advancedDrawerController),
       SettingScreen(advancedDrawerController: _advancedDrawerController),
     ];
-    Provider.of<ImageController>(context, listen: false).pickImage();
-    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _advancedDrawerController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-    final imageProvider = Provider.of<ImageController>(context, listen: false);
-    final image = imageProvider.imageFile;
-    // print("images $image");
-    ;
+    final size = MediaQuery.of(context).size;
+
     return AdvancedDrawer(
       backdrop: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Theme.of(context).inputDecorationTheme.fillColor!,
-              Theme.of(context).inputDecorationTheme.fillColor!,
-            ],
-          ),
-        ),
+        width: size.width,
+        height: size.height,
+        color: Theme.of(context).inputDecorationTheme.fillColor,
       ),
-      childDecoration: BoxDecoration(borderRadius: BorderRadius.circular(14)),
+      childDecoration: BoxDecoration(borderRadius: BorderRadius.circular(14.r)),
       controller: _advancedDrawerController,
       animationCurve: Curves.easeInOut,
       animationDuration: const Duration(milliseconds: 500),
@@ -67,180 +50,191 @@ class _HiddendrawerState extends State<Hiddendrawer> {
       openRatio: 0.60,
       disabledGestures: false,
       drawer: SafeArea(
-        top: false,
-        child: Stack(
-          children: [
-            DrawerHeader(
-              margin: EdgeInsets.all(60.w),
-              padding: EdgeInsets.only(bottom: 40.w),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.red,
-              ),
-              child: image != null
-                  ? Image.file(image, fit: BoxFit.cover)
-                  : Center(child: Icon(Icons.person, size: 50.sp)),
-            ),
-            Align(
-              alignment: AlignmentGeometry.xy(0, -0.29),
-              child: ListTile(
-                onTap: () async {
-                  setState(() {
-                    currentIndex = 0;
-                  });
-                  await Future.delayed(Duration(milliseconds: 250));
-                  _advancedDrawerController.hideDrawer();
-                },
-                leading: FaIcon(FontAwesomeIcons.solidHouse),
-                title: Text('Home'),
-              ),
-            ),
-            Align(
-              alignment: AlignmentGeometry.xy(0, -0.15),
-              child: ListTile(
-                onTap: () async {
-                  setState(() {
-                    currentIndex = 1;
-                  });
-                  await Future.delayed(Duration(milliseconds: 250));
-                  _advancedDrawerController.hideDrawer();
-                },
-                leading: FaIcon(FontAwesomeIcons.solidBell),
-                title: Text('Notifications'),
-              ),
-            ),
-            Align(
-              alignment: AlignmentGeometry.xy(0, -0.0),
-              child: ListTile(
-                onTap: () async {
-                  setState(() {
-                    currentIndex = 2;
-                  });
-                  await Future.delayed(Duration(milliseconds: 250));
-                  _advancedDrawerController.hideDrawer();
-                },
-                leading: FaIcon(FontAwesomeIcons.solidCircleQuestion),
-                title: Text('Help & Support'),
-              ),
-            ),
-            Align(
-              alignment: AlignmentGeometry.xy(0, 0.16),
-              child: ListTile(
-                onTap: () async {
-                  setState(() {
-                    currentIndex = 3;
-                  });
-                  await Future.delayed(Duration(milliseconds: 250));
-                  _advancedDrawerController.hideDrawer();
-                },
-                leading: Icon(Icons.settings, size: 27.sp),
-                title: Text(
-                  'Settings',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontSize: 21.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 22.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _DrawerHeader(),
+              SizedBox(height: 34.h),
+              Text(
+                "Menu",
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
                 ),
               ),
-            ),
-            // Spacer(),
-            Align(
-              alignment: AlignmentGeometry.xy(0, 0.6),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 14,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                onPressed: () async {
-                  await InitSheredPref.instance.logOut();
-                  _nextpage();
-                },
-                child: Text(
-                  "Logout",
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+              SizedBox(height: 12.h),
+              _DrawerTile(
+                selected: currentIndex == 0,
+                icon: FontAwesomeIcons.solidHouse,
+                title: "Home",
+                onTap: () => _selectPage(0),
               ),
-            ),
-            // Spacer(flex: 1),
-            Align(
-              alignment: AlignmentGeometry.xy(0, 1.0),
-              child: Text(
-                "Version 1.0.0",
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontSize: 17.sp,
-                  fontWeight: FontWeight.w500,
-                ),
+              SizedBox(height: 8.h),
+              _DrawerTile(
+                selected: currentIndex == 1,
+                icon: FontAwesomeIcons.circleQuestion,
+                title: "Help & Support",
+                onTap: () => _selectPage(1),
               ),
-            ),
-            Align(
-              alignment: AlignmentGeometry.xy(0.29, -0.55),
-              child: IconButton(
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                    builder: (context) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            onTap: () {
-                              imageProvider.pickFromCamera();
-                            },
-                            leading: Icon(Icons.camera_alt),
-                            title: Text('Camera'),
-                          ),
-                          ListTile(
-                            onTap: () {
-                              imageProvider.pickFromGallery();
-                            },
-                            leading: Icon(Icons.photo),
-                            title: Text('Gallery'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                icon: FaIcon(FontAwesomeIcons.cameraRetro, size: 20.sp),
+              SizedBox(height: 8.h),
+              _DrawerTile(
+                selected: currentIndex == 2,
+                materialIcon: Icons.settings,
+                title: "Settings",
+                onTap: () => _selectPage(2),
               ),
-            ),
-          ],
+              const Spacer(),
+              const _DrawerFooter(),
+            ],
+          ),
         ),
       ),
-      child: pages[currentIndex],
+      child: _pages[currentIndex],
     );
   }
 
-  void _nextpage() {
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) {
-          return Loginscreen();
-        },
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1.0, 0.0),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
+  Future<void> _selectPage(int index) async {
+    setState(() {
+      currentIndex = index;
+    });
+    await Future.delayed(const Duration(milliseconds: 250));
+    _advancedDrawerController.hideDrawer();
+  }
+}
+
+class _DrawerHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          height: 48.w,
+          width: 48.w,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary,
+            borderRadius: BorderRadius.circular(14.r),
+          ),
+          child: Icon(
+            Icons.account_balance_wallet_outlined,
+            color: Theme.of(context).scaffoldBackgroundColor,
+            size: 27.sp,
+          ),
+        ),
+        SizedBox(width: 12.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Expense Tracker",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontSize: 19.sp,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              SizedBox(height: 2.h),
+              Text(
+                "Manage your money",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(fontSize: 12.sp),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DrawerTile extends StatelessWidget {
+  final bool selected;
+  final FaIconData? icon;
+  final IconData? materialIcon;
+  final String title;
+  final VoidCallback onTap;
+
+  const _DrawerTile({
+    required this.selected,
+    required this.title,
+    required this.onTap,
+    this.icon,
+    this.materialIcon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = selected
+        ? Theme.of(context).colorScheme.primary
+        : Theme.of(context).textTheme.bodyLarge?.color;
+
+    return Material(
+      color: selected
+          ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.12)
+          : Colors.transparent,
+      borderRadius: BorderRadius.circular(16.r),
+      child: ListTile(
+        onTap: onTap,
+        contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        leading: icon != null
+            ? FaIcon(icon, color: color, size: 21.sp)
+            : Icon(materialIcon, color: color, size: 25.sp),
+        title: Text(
+          title,
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+            color: color,
+            fontSize: 18.sp,
+            fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DrawerFooter extends StatelessWidget {
+  const _DrawerFooter();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(14.w),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.16),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.info_outline,
+            color: Theme.of(context).colorScheme.primary,
+            size: 20.sp,
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Text(
+              "Version 1.0.0",
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

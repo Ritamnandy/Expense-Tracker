@@ -74,6 +74,7 @@ class InitSheredPref {
 
   //set and get images
   Future<void> setImages(String images) async {
+    await _prefs?.remove("images");
     await _prefs?.setString("images", images);
   }
 

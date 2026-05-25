@@ -1,4 +1,3 @@
-import 'package:expense_tracker/apis/auth_services.dart';
 import 'package:expense_tracker/core/validators/validator.dart';
 import 'package:expense_tracker/screens/hidden_drawer.dart';
 import 'package:expense_tracker/screens/register_screen.dart';
@@ -177,26 +176,27 @@ class _LoginscreenState extends State<Loginscreen> {
                           ElevatedButton(
                             onPressed: () async {
                               if (formKey.currentState!.validate()) {
-                                String email = emailController.text.trim();
-                                String password = passwordController.text
-                                    .trim();
-                                _showLoadingDialog(context);
-                                final success = await AuthServices.login(
-                                  email: email,
-                                  password: password,
-                                );
-                                Navigator.pop(context);
-                                if (success['success'] == true) {
-                                  _nextScreen();
-                                } else {
-                                  _showerror(
-                                    success['message'] ??
-                                        success['error'] ??
-                                        'Login failed',
-                                  );
-                                  FocusScope.of(context).unfocus();
-                                  formKey.currentState!.reset();
-                                }
+                                // String email = emailController.text.trim();
+                                // String password = passwordController.text
+                                //     .trim();
+                                // _showLoadingDialog(context);
+                                // final success = await AuthServices.login(
+                                //   email: email,
+                                //   password: password,
+                                // );
+                                // Navigator.pop(context);
+                                // if (success['success'] == true) {
+                                //   _nextScreen();
+                                // } else {
+                                //   _showerror(
+                                //     success['message'] ??
+                                //         success['error'] ??
+                                //         'Login failed',
+                                //   );
+                                //   FocusScope.of(context).unfocus();
+                                //   formKey.currentState!.reset();
+                                // }
+                                _nextScreen();
                               }
                             },
                             child: Text(
@@ -299,49 +299,6 @@ class _LoginscreenState extends State<Loginscreen> {
             ),
           );
         },
-      ),
-    );
-  }
-
-  void _showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          content: Row(
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(width: 20),
-              Text(
-                'Logging in...',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _showerror(String error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        dismissDirection: DismissDirection.horizontal,
-        padding: EdgeInsets.all(10),
-        backgroundColor: Colors.redAccent,
-        content: Center(
-          child: Text(
-            error,
-            style: Theme.of(
-              context,
-            ).textTheme.headlineMedium?.copyWith(fontSize: 18.sp),
-          ),
-        ),
-        duration: Duration(seconds: 3),
       ),
     );
   }
