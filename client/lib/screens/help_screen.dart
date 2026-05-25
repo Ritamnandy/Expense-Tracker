@@ -92,17 +92,47 @@ class Helpandsupport extends StatelessWidget {
             _FaqTile(
               question: "Why are my transactions not showing?",
               answer:
-                  "Pull down on the Home screen to refresh. Also check that you selected the correct month or date.",
+                  "Pull down on the Home screen to refresh the list. If you selected a date from the app bar, choose the current date again or reopen Home to see the default monthly view.",
             ),
             _FaqTile(
-              question: "How do I delete a transaction?",
+              question: "How can I see all transactions?",
               answer:
-                  "Swipe a transaction from right to left, then confirm delete.",
+                  "On the Home screen, tap See All beside Recent Transactions. When you come back, the Home screen refreshes the current month automatically.",
+            ),
+            _FaqTile(
+              question: "How do I delete one transaction?",
+              answer:
+                  "In Recent Transactions or the full transaction list, swipe the transaction from right to left and confirm Delete.",
             ),
             _FaqTile(
               question: "How do I update my profile photo?",
               answer:
-                  "Open the drawer and tap the camera icon near your profile image.",
+                  "Tap the profile icon in the Home app bar, or open Settings > Profile. Then tap the camera button and choose Camera or Gallery.",
+            ),
+            _FaqTile(
+              question: "Will my profile name, email, and photo stay saved?",
+              answer:
+                  "Yes. Your profile name, email, and selected image are saved locally on this device and load again when you reopen the app.",
+            ),
+            _FaqTile(
+              question: "How do I change app theme?",
+              answer:
+                  "Open Settings > Theme and choose Light, Dark, or System Default.",
+            ),
+            _FaqTile(
+              question: "What happens when I logout?",
+              answer:
+                  "Logout removes your login session. Your local transactions remain on this device unless you clear them manually from Settings.",
+            ),
+            _FaqTile(
+              question: "How do I clear all local transactions?",
+              answer:
+                  "Open Settings > Clear Data. Confirm the dialog to permanently delete local transactions from this device.",
+            ),
+            _FaqTile(
+              question: "How do I copy the support email?",
+              answer:
+                  "Tap the support card or the copy icon at the bottom of this page. The email address will be copied to your clipboard.",
             ),
 
             SizedBox(height: 20.h),
