@@ -4,6 +4,7 @@ import 'package:expense_tracker/pages/income_page.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
 import 'package:expense_tracker/provider/image_provider.dart';
 import 'package:expense_tracker/screens/all_transactions.dart';
+import 'package:expense_tracker/screens/setting_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
@@ -38,7 +39,6 @@ class _HomescreenState extends State<Homescreen> {
     super.initState();
   }
 
-  @override
   Widget build(BuildContext context) {
     final imageProvider = Provider.of<ImageController>(context);
     final image = imageProvider.imageFile;
@@ -119,14 +119,25 @@ class _HomescreenState extends State<Homescreen> {
               actions: [
                 Padding(
                   padding: const EdgeInsets.only(right: 20.00),
-                  child: CircleAvatar(
-                    radius: 23.r,
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    backgroundImage: image != null ? FileImage(image) : null,
-                    child: Icon(
-                      Icons.person,
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      size: 25.sp,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(23.r),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                      );
+                    },
+                    child: CircleAvatar(
+                      radius: 23.r,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundImage: image != null ? FileImage(image) : null,
+                      child: image == null
+                          ? Icon(
+                              Icons.person,
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              size: 25.sp,
+                            )
+                          : null,
                     ),
                   ),
                 ),
@@ -376,19 +387,6 @@ class _HomescreenState extends State<Homescreen> {
                   ),
             ),
 
-            // AdMob placeholder
-            bottomNavigationBar: Container(
-              padding: const EdgeInsets.all(10),
-              height: 55,
-              width: double.infinity,
-              decoration: const BoxDecoration(color: Colors.grey),
-              child: Center(
-                child: Text(
-                  "Place for add..",
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-              ),
-            ),
           ),
         ),
       ),
@@ -434,8 +432,8 @@ class _HomescreenState extends State<Homescreen> {
     }
   }
 
-  void _seeAllTransactions(String symbol) {
-    Navigator.push(
+  void _seeAllTransactions(String symbol) async {
+    await Navigator.push(
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
@@ -453,6 +451,14 @@ class _HomescreenState extends State<Homescreen> {
             ),
       ),
     );
+    // Restore home screen state when returning
+    if (mounted) {
+      setState(() {
+        _selectedDate = null;
+        time = DateFormat('dd MMM yyyy').format(now);
+      });
+      await context.read<ExpenseAndIncomeChart>().searchByMonth(_currentMonth);
+    }
   }
 }
 

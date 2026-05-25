@@ -1,3 +1,4 @@
+import 'package:expense_tracker/db/db_helper.dart';
 import 'package:expense_tracker/models/init_shered_pref.dart';
 import 'package:expense_tracker/provider/image_provider.dart';
 import 'package:expense_tracker/provider/theme_provider.dart';
@@ -92,6 +93,16 @@ class _SettingScreenState extends State<SettingScreen> {
               },
             ),
 
+            _SettingTile(
+              icon: Icons.delete_forever_outlined,
+              title: "Clear Data",
+              subtitle: "Manually delete local transactions",
+              iconColor: Colors.redAccent,
+              onTap: () {
+                _showClearDataDialog(context);
+              },
+            ),
+
             SizedBox(height: 20.h),
             _SectionTitle(title: "About"),
 
@@ -166,7 +177,7 @@ class _SettingScreenState extends State<SettingScreen> {
       builder: (context) {
         return AlertDialog(
           title: const Text("Logout"),
-          content: const Text("Are you sure you want to logout?"),
+          content: const Text("Are you sure you want to logout?\n\nYour local data will remain on this device for 2 months. To clear it manually, use the 'Clear Data' button in settings."),
           actions: [
             TextButton(
               onPressed: () {
@@ -187,6 +198,42 @@ class _SettingScreenState extends State<SettingScreen> {
               },
               child: const Text(
                 "Logout",
+                style: TextStyle(color: Colors.redAccent),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showClearDataDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Clear Local Data"),
+          content: const Text("Are you sure you want to permanently delete all local transactions from this device?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                await DBHelper.instance.clearAllData();
+
+                if (!context.mounted) return;
+
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Local data cleared successfully")),
+                );
+              },
+              child: const Text(
+                "Clear",
                 style: TextStyle(color: Colors.redAccent),
               ),
             ),

@@ -178,7 +178,7 @@ class _IncomepageState extends State<Incomepage> {
                 if (formKey.currentState!.validate()) {
                   chartProvider.addIncome(
                     purpose: purposeController.text,
-                    amount: double.parse(amountController.text),
+                    amount: double.tryParse(amountController.text) ?? 0.0,
                     isExpense: false,
                     currencySymbol: selectedCurrency.symbol,
                   );
