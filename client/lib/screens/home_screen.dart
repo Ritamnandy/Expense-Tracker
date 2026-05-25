@@ -4,6 +4,7 @@ import 'package:expense_tracker/pages/income_page.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
 import 'package:expense_tracker/provider/image_provider.dart';
 import 'package:expense_tracker/screens/all_transactions.dart';
+import 'package:expense_tracker/screens/setting_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
@@ -44,8 +45,23 @@ class _HomescreenState extends State<Homescreen> {
     final chartProvider = Provider.of<ExpenseAndIncomeChart>(context);
     final list = chartProvider.list;
 
-    final totalIncome = chartProvider.monthlyIncome;
-    final totalExpense = chartProvider.monthlyExpense;
+    final totalIncome = list.isEmpty
+        ? 0.00
+        : list
+              .where((element) => element.isExpense == false)
+              .fold(
+                0.0,
+                (previousValue, element) => previousValue + element.amount,
+              );
+
+    final totalExpense = list.isEmpty
+        ? 0.00
+        : list
+              .where((element) => element.isExpense == true)
+              .fold(
+                0.0,
+                (previousValue, element) => previousValue + element.amount,
+              );
 
     final currencySymbol = chartProvider.list.isNotEmpty
         ? chartProvider.list.first.currencySymbol
@@ -103,14 +119,25 @@ class _HomescreenState extends State<Homescreen> {
               actions: [
                 Padding(
                   padding: const EdgeInsets.only(right: 20.00),
-                  child: CircleAvatar(
-                    radius: 23.r,
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    backgroundImage: image != null ? FileImage(image) : null,
-                    child: Icon(
-                      Icons.person,
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      size: 25.sp,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(23.r),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                      );
+                    },
+                    child: CircleAvatar(
+                      radius: 23.r,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundImage: image != null ? FileImage(image) : null,
+                      child: image == null
+                          ? Icon(
+                              Icons.person,
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              size: 25.sp,
+                            )
+                          : null,
                     ),
                   ),
                 ),

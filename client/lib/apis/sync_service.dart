@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class SyncService {
-  static const baseUrl = "http://10.0.2.2:8080/api/v1/sync";
+  static const baseUrl = "http://192.168.10.34:8080/api/v1/sync";
 
   static Future<Map<String, dynamic>> sync({
     required String token,
