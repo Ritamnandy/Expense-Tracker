@@ -2,6 +2,7 @@ import 'package:expense_tracker/models/chartdata.dart';
 import 'package:expense_tracker/pages/expense_page.dart';
 import 'package:expense_tracker/pages/income_page.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
+import 'package:expense_tracker/provider/image_provider.dart';
 import 'package:expense_tracker/screens/all_transactions.dart';
 
 import 'package:flutter/material.dart';
@@ -39,6 +40,8 @@ class _HomescreenState extends State<Homescreen> {
 
   @override
   Widget build(BuildContext context) {
+    final imageProvider = Provider.of<ImageController>(context);
+    final image = imageProvider.imageFile;
     final chartProvider = Provider.of<ExpenseAndIncomeChart>(context);
     final list = chartProvider.list;
 
@@ -119,8 +122,11 @@ class _HomescreenState extends State<Homescreen> {
                   child: CircleAvatar(
                     radius: 23.r,
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    backgroundImage: const NetworkImage(
-                      'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8YXZhdGFyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
+                    backgroundImage: image != null ? FileImage(image) : null,
+                    child: Icon(
+                      Icons.person,
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      size: 25.sp,
                     ),
                   ),
                 ),

@@ -1,6 +1,7 @@
 import 'package:expense_tracker/db/db_helper.dart';
 import 'package:expense_tracker/models/init_shered_pref.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
+import 'package:expense_tracker/provider/image_provider.dart';
 
 import 'package:expense_tracker/provider/theme_provider.dart';
 import 'package:expense_tracker/screens/hidden_drawer.dart';
@@ -25,6 +26,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => ImageController()),
         ChangeNotifierProvider(create: (context) => ExpenseAndIncomeChart()),
         // Reuse the already-loaded instance — no second ThemeProvider created
         ChangeNotifierProvider<ThemeProvider>.value(value: themeProvider),

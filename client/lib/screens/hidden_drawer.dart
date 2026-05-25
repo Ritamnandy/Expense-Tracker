@@ -1,4 +1,5 @@
 import 'package:expense_tracker/models/init_shered_pref.dart';
+import 'package:expense_tracker/provider/image_provider.dart';
 import 'package:expense_tracker/screens/help_screen.dart';
 import 'package:expense_tracker/screens/home_screen.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 class Hiddendrawer extends StatefulWidget {
   const Hiddendrawer({super.key});
@@ -36,6 +38,8 @@ class _HiddendrawerState extends State<Hiddendrawer> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
+    final imageProvider = Provider.of<ImageController>(context);
+    final image = imageProvider.imageFile;
     return AdvancedDrawer(
       backdrop: Container(
         width: width,
@@ -63,7 +67,7 @@ class _HiddendrawerState extends State<Hiddendrawer> {
         child: Column(
           children: [
             DrawerHeader(
-              child: Image.asset("assets/images/logo.png", fit: BoxFit.cover),
+              child: image != null ? Image.file(image) : Icon(Icons.person),
             ),
             ListTile(
               onTap: () async {
