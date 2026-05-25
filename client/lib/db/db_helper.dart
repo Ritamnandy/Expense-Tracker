@@ -22,7 +22,12 @@ class DBHelper {
   Future<Database?> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
-    return await openDatabase(path, version: 3, onCreate: _createDB, onUpgrade: _upgradeDB);
+    return await openDatabase(
+      path,
+      version: 3,
+      onCreate: _createDB,
+      onUpgrade: _upgradeDB,
+    );
   }
 
   FutureOr<void> _createDB(Database db, int version) async {
@@ -50,7 +55,9 @@ class DBHelper {
     }
     if (oldVersion < 3) {
       await db.execute('ALTER TABLE transactions ADD COLUMN user_id TEXT');
-      await db.execute('ALTER TABLE transactions ADD COLUMN is_deleted INTEGER DEFAULT 0');
+      await db.execute(
+        'ALTER TABLE transactions ADD COLUMN is_deleted INTEGER DEFAULT 0',
+      );
       await db.execute('ALTER TABLE transactions ADD COLUMN updated_at TEXT');
       await db.execute('ALTER TABLE transactions ADD COLUMN synced_at TEXT');
     }
@@ -107,7 +114,8 @@ class DBHelper {
   Future<int> deleteData(String id) async {
     final db = await instance.database;
     final n = DateTime.now();
-    final now = '${n.year}-${_pad(n.month)}-${_pad(n.day)} ${_pad(n.hour)}:${_pad(n.minute)}:${_pad(n.second)}';
+    final now =
+        '${n.year}-${_pad(n.month)}-${_pad(n.day)} ${_pad(n.hour)}:${_pad(n.minute)}:${_pad(n.second)}';
     return await db.update(
       'transactions',
       {'is_deleted': 1, 'updated_at': now},
@@ -147,7 +155,10 @@ class DBHelper {
   // HARD DELETE: clean up soft-deleted records after sync confirmed
   Future<int> purgeDeleted() async {
     final db = await instance.database;
-    return await db.delete('transactions', where: 'is_deleted = 1 AND synced_at IS NOT NULL');
+    return await db.delete(
+      'transactions',
+      where: 'is_deleted = 1 AND synced_at IS NOT NULL',
+    );
   }
 
   /// Upsert a record from the server.
@@ -167,7 +178,12 @@ class DBHelper {
       if (incomingSymbol.isEmpty) {
         map['currencySymbol'] = existing.first['currencySymbol'] ?? '';
       }
-      await db.update('transactions', map, where: 'id = ?', whereArgs: [data.id]);
+      await db.update(
+        'transactions',
+        map,
+        where: 'id = ?',
+        whereArgs: [data.id],
+      );
     } else {
       await db.insert('transactions', data.toMap());
     }

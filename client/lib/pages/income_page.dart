@@ -50,6 +50,7 @@ class _IncomepageState extends State<Incomepage> {
             controller: amountController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             keyboardType: TextInputType.numberWithOptions(decimal: true),
+            textInputAction: TextInputAction.next,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter amount';
@@ -91,12 +92,12 @@ class _IncomepageState extends State<Incomepage> {
                     context: context,
                     theme: CurrencyPickerThemeData(
                       flagSize: 30,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).scaffoldBackgroundColor,
                       bottomSheetHeight: 400,
                       titleTextStyle: Theme.of(context).textTheme.bodyMedium,
-                      subtitleTextStyle:
-                          Theme.of(context).textTheme.bodyMedium,
+                      subtitleTextStyle: Theme.of(context).textTheme.bodyMedium,
                     ),
                     showFlag: true,
                     showCurrencyCode: true,
@@ -138,6 +139,7 @@ class _IncomepageState extends State<Incomepage> {
           TextFormField(
             controller: purposeController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
+            textInputAction: TextInputAction.done,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter Purpose';

@@ -41,6 +41,7 @@ class InitSheredPref {
   }
 
   Future<String?> getToken() async {
+    await Future.delayed(const Duration(seconds: 5));
     String? value = _prefs?.getString("token");
     return value;
   }
@@ -69,5 +70,32 @@ class InitSheredPref {
 
   Future<String?> getLastSyncedAt() async {
     return _prefs?.getString("last_synced_at");
+  }
+
+  //set and get images
+  Future<void> setImages(String images) async {
+    await _prefs?.remove("images");
+    await _prefs?.setString("images", images);
+  }
+
+  Future<String?> getImages() async {
+    return _prefs?.getString("images");
+  }
+
+  /// set and get profile details
+  Future<void> setProfileName(String name) async {
+    await _prefs?.setString("profile_name", name);
+  }
+
+  Future<String?> getProfileName() async {
+    return _prefs?.getString("profile_name");
+  }
+
+  Future<void> setProfileEmail(String email) async {
+    await _prefs?.setString("profile_email", email);
+  }
+
+  Future<String?> getProfileEmail() async {
+    return _prefs?.getString("profile_email");
   }
 }

@@ -2,6 +2,7 @@ import 'package:expense_tracker/models/chartdata.dart';
 import 'package:expense_tracker/pages/expense_page.dart';
 import 'package:expense_tracker/pages/income_page.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
+import 'package:expense_tracker/provider/image_provider.dart';
 import 'package:expense_tracker/screens/all_transactions.dart';
 
 import 'package:flutter/material.dart';
@@ -39,6 +40,8 @@ class _HomescreenState extends State<Homescreen> {
 
   @override
   Widget build(BuildContext context) {
+    final imageProvider = Provider.of<ImageController>(context);
+    final image = imageProvider.imageFile;
     final chartProvider = Provider.of<ExpenseAndIncomeChart>(context);
     final list = chartProvider.list;
 
@@ -46,13 +49,19 @@ class _HomescreenState extends State<Homescreen> {
         ? 0.00
         : list
               .where((element) => element.isExpense == false)
-              .fold(0.0, (previousValue, element) => previousValue + element.amount);
+              .fold(
+                0.0,
+                (previousValue, element) => previousValue + element.amount,
+              );
 
     final totalExpense = list.isEmpty
         ? 0.00
         : list
               .where((element) => element.isExpense == true)
-              .fold(0.0, (previousValue, element) => previousValue + element.amount);
+              .fold(
+                0.0,
+                (previousValue, element) => previousValue + element.amount,
+              );
 
     final currencySymbol = chartProvider.list.isNotEmpty
         ? chartProvider.list.first.currencySymbol
@@ -80,7 +89,7 @@ class _HomescreenState extends State<Homescreen> {
             await chartProvider.searchByMonth(_currentMonth);
           },
           child: Scaffold(
-            resizeToAvoidBottomInset: true,
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               leading: IconButton(
                 onPressed: () {
@@ -113,8 +122,11 @@ class _HomescreenState extends State<Homescreen> {
                   child: CircleAvatar(
                     radius: 23.r,
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    backgroundImage: const NetworkImage(
-                      'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8YXZhdGFyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
+                    backgroundImage: image != null ? FileImage(image) : null,
+                    child: Icon(
+                      Icons.person,
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      size: 25.sp,
                     ),
                   ),
                 ),
@@ -131,7 +143,8 @@ class _HomescreenState extends State<Homescreen> {
                   Tab(
                     child: Text(
                       'Income',
-                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                      style: Theme.of(context).textTheme.headlineLarge
+                          ?.copyWith(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w700,
                           ),
@@ -140,7 +153,8 @@ class _HomescreenState extends State<Homescreen> {
                   Tab(
                     child: Text(
                       'Expense',
-                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                      style: Theme.of(context).textTheme.headlineLarge
+                          ?.copyWith(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w700,
                           ),
@@ -150,209 +164,215 @@ class _HomescreenState extends State<Homescreen> {
               ),
             ),
             body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  // Income / Expense form tabs
-                  Container(
-                    padding: const EdgeInsets.only(
-                      top: 20,
-                      left: 20,
-                      right: 20,
-                    ),
-                    height: 319,
-                    width: double.infinity,
-                    child: TabBarView(
-                      children: [
-                        const Incomepage(),
-                        const Expensepage(),
-                      ],
-                    ),
-                  ),
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.viewInsetsOf(context).bottom,
+              ),
+              child:
+                  Column(
+                    children: [
+                      // Income / Expense form tabs
+                      Container(
+                        padding: const EdgeInsets.only(
+                          top: 20,
+                          left: 20,
+                          right: 20,
+                        ),
+                        height: 319,
+                        width: double.infinity,
+                        child: TabBarView(
+                          children: [const Incomepage(), const Expensepage()],
+                        ),
+                      ),
 
-                  // Summary + circular indicator
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: Column(
-                      spacing: 40,
-                      children: [
-                        Row(
+                      // Summary + circular indicator
+                      Container(
+                        padding: const EdgeInsets.all(15),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                        child: Column(
+                          spacing: 40,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                    ),
+                                    leading: Container(
+                                      height: 35,
+                                      width: 35,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: const Icon(
+                                        Icons.arrow_upward,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    title: Text(
+                                      "Income",
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      '$currencySymbol ${totalIncome.toStringAsFixed(0)}',
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                    ),
+                                    leading: Container(
+                                      height: 35,
+                                      width: 35,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.secondary,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: const Icon(
+                                        Icons.arrow_downward,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    title: Text(
+                                      "Expense",
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      '$currencySymbol ${totalExpense.toStringAsFixed(0)}',
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            CircularPercentIndicator(
+                              radius: 150.0,
+                              lineWidth: 40.0,
+                              animation: true,
+                              animationDuration: 1200,
+                              circularStrokeCap: CircularStrokeCap.round,
+                              percent: safeToSpendPercentage,
+                              center: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Safe to Spend",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(
+                                          fontSize: 22.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    "$currencySymbol ${safeToSpend.toStringAsFixed(2)}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    "$daysLeft days left",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: Theme.of(
+                                context,
+                              ).inputDecorationTheme.fillColor!,
+                              progressColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Recent transactions header
+                      Container(
+                        padding: const EdgeInsets.all(15),
+                        height: 80,
+                        width: double.infinity,
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(
-                              child: ListTile(
-                                contentPadding:
-                                    const EdgeInsets.symmetric(horizontal: 4),
-                                leading: Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: const Icon(
-                                    Icons.arrow_upward,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                title: Text(
-                                  "Income",
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  '$currencySymbol ${totalIncome.toStringAsFixed(0)}',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
+                            Text(
+                              "Recent Transactions",
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(fontSize: 21.sp),
                             ),
-                            Expanded(
-                              child: ListTile(
-                                contentPadding:
-                                    const EdgeInsets.symmetric(horizontal: 4),
-                                leading: Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: const Icon(
-                                    Icons.arrow_downward,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                title: Text(
-                                  "Expense",
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  '$currencySymbol ${totalExpense.toStringAsFixed(0)}',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                            TextButton(
+                              onPressed: () =>
+                                  _seeAllTransactions(currencySymbol),
+                              child: Text(
+                                "See All",
+                                style: Theme.of(context).textTheme.headlineSmall
+                                    ?.copyWith(
+                                      fontSize: 18.sp,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                    ),
                               ),
                             ),
                           ],
                         ),
+                      ),
 
-                        CircularPercentIndicator(
-                          radius: 150.0,
-                          lineWidth: 40.0,
-                          animation: true,
-                          animationDuration: 1200,
-                          circularStrokeCap: CircularStrokeCap.round,
-                          percent: safeToSpendPercentage,
-                          center: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Safe to Spend",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium
-                                    ?.copyWith(
-                                      fontSize: 22.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                "$currencySymbol ${safeToSpend.toStringAsFixed(2)}",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium
-                                    ?.copyWith(
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                "$daysLeft days left",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium
-                                    ?.copyWith(
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                              ),
-                            ],
-                          ),
-                          backgroundColor:
-                              Theme.of(context).inputDecorationTheme.fillColor!,
-                          progressColor:
-                              Theme.of(context).colorScheme.primary,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Recent transactions header
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    height: 80,
-                    width: double.infinity,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Recent Transactions",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(fontSize: 21.sp),
-                        ),
-                        TextButton(
-                          onPressed: () =>
-                              _seeAllTransactions(currencySymbol),
-                          child: Text(
-                            "See All",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
-                                  fontSize: 18.sp,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Recent list with swipe-to-delete
-                  _RecentTransactionList(
-                    list: _selectedDate != null
-                        ? chartProvider.list
-                              .where((e) => e.date == _selectedDate)
-                              .toList()
-                        : chartProvider.list,
-                    currencySymbol: currencySymbol,
-                    onDelete: (id) =>
-                        context.read<ExpenseAndIncomeChart>().deleteItem(id),
-                  ),
-                ],
-              ).animate().fadeIn(
+                      // Recent list with swipe-to-delete
+                      _RecentTransactionList(
+                        list: _selectedDate != null
+                            ? chartProvider.list
+                                  .where((e) => e.date == _selectedDate)
+                                  .toList()
+                            : chartProvider.list,
+                        currencySymbol: currencySymbol,
+                        onDelete: (id) => context
+                            .read<ExpenseAndIncomeChart>()
+                            .deleteItem(id),
+                      ),
+                    ],
+                  ).animate().fadeIn(
                     curve: Curves.easeIn,
-                    duration: const Duration(milliseconds: 1000),
+                    duration: const Duration(milliseconds: 350),
                   ),
             ),
 
@@ -420,17 +440,17 @@ class _HomescreenState extends State<Homescreen> {
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             AllTransaction(currencySymbol: symbol),
-        transitionsBuilder:
-            (context, animation, secondaryAnimation, child) => FadeTransition(
-          opacity: animation,
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1.0, 0.0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          ),
-        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1.0, 0.0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              ),
+            ),
       ),
     );
   }
@@ -460,10 +480,10 @@ class _RecentTransactionList extends StatelessWidget {
         child: Center(
           child: Text(
             "No transactions yet",
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: Colors.grey, fontSize: 16.sp),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Colors.grey,
+              fontSize: 16.sp,
+            ),
           ),
         ),
       );
@@ -497,7 +517,8 @@ class _RecentTransactionList extends StatelessWidget {
               builder: (ctx) => AlertDialog(
                 title: const Text("Delete Transaction"),
                 content: const Text(
-                    "Are you sure you want to delete this transaction?"),
+                  "Are you sure you want to delete this transaction?",
+                ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(ctx, false),
@@ -505,8 +526,10 @@ class _RecentTransactionList extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(ctx, true),
-                    child: const Text("Delete",
-                        style: TextStyle(color: Colors.red)),
+                    child: const Text(
+                      "Delete",
+                      style: TextStyle(color: Colors.red),
+                    ),
                   ),
                 ],
               ),

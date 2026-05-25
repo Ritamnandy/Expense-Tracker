@@ -1,16 +1,20 @@
 import 'package:expense_tracker/db/db_helper.dart';
 import 'package:expense_tracker/models/init_shered_pref.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
-import 'package:expense_tracker/provider/sync_provider.dart';
+import 'package:expense_tracker/provider/image_provider.dart';
+
 import 'package:expense_tracker/provider/theme_provider.dart';
 import 'package:expense_tracker/screens/hidden_drawer.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
 import 'package:expense_tracker/screens/splash_screen.dart';
+
 import 'package:expense_tracker/theme/apptheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
+import 'package:expense_tracker/provider/sync_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +25,9 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => ImageController()),
+        ChangeNotifierProvider(create: (context) => ExpenseAndIncomeChart()),
         // Reuse the already-loaded instance — no second ThemeProvider created
         ChangeNotifierProvider<ThemeProvider>.value(value: themeProvider),
         ChangeNotifierProvider(create: (_) => ExpenseAndIncomeChart()),
@@ -49,23 +56,25 @@ class _MyAppState extends State<MyApp> {
   late Future<String?> tokenFuture;
   @override
   void initState() {
-    super.initState();
     tokenFuture = InitSheredPref.instance.getToken();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
-    final h = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
     final themeProvider = Provider.of<ThemeProvider>(context);
     return ScreenUtilInit(
-      designSize: Size(w, h),
+      designSize: Size(width, height),
       minTextAdapt: true,
       splitScreenMode: true,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         themeAnimationCurve: Curves.easeIn,
         title: 'Expense Tracker',
+
         themeMode: themeProvider.themeMode,
         darkTheme: AppTheme.darkTheme.copyWith(
           textTheme: GoogleFonts.poppinsTextTheme(AppTheme.darkTheme.textTheme),
@@ -78,17 +87,18 @@ class _MyAppState extends State<MyApp> {
         home: SafeArea(
           top: false,
           bottom: false,
-          child: FutureBuilder<String?>(
+          child: FutureBuilder(
             future: tokenFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Splashscreen();
+                return Splashscreen();
               }
               final token = snapshot.data;
+
               if (token == null) {
-                return const Loginscreen();
+                return Loginscreen();
               }
-              return const Hiddendrawer();
+              return Hiddendrawer();
             },
           ),
         ),

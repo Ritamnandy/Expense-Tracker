@@ -5,7 +5,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:year_month_picker/year_month_picker.dart';
 
@@ -94,12 +93,18 @@ class _AllTransactionState extends State<AllTransaction> {
                 const SizedBox(height: 5),
 
                 chartProvider.list.isEmpty
-                    ? Center(child: Lottie.asset("assets/images/notfound.json"))
+                    ? Center(
+                        child: Text(
+                          "No data found",
+                          style: TextStyle(fontSize: 20.sp),
+                        ),
+                      )
                     : _TransactionList(
                         list: chartProvider.list,
                         currencySymbol: widget.currencySymbol,
-                        onDelete: (id) =>
-                            context.read<ExpenseAndIncomeChart>().deleteItem(id),
+                        onDelete: (id) => context
+                            .read<ExpenseAndIncomeChart>()
+                            .deleteItem(id),
                       ).animate().fadeIn(
                         curve: Curves.easeIn,
                         duration: const Duration(milliseconds: 1000),
@@ -155,7 +160,8 @@ class _TransactionList extends StatelessWidget {
               builder: (ctx) => AlertDialog(
                 title: const Text('Delete Transaction'),
                 content: const Text(
-                    'Are you sure you want to delete this transaction?'),
+                  'Are you sure you want to delete this transaction?',
+                ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(ctx, false),
@@ -163,8 +169,10 @@ class _TransactionList extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(ctx, true),
-                    child: const Text('Delete',
-                        style: TextStyle(color: Colors.red)),
+                    child: const Text(
+                      'Delete',
+                      style: TextStyle(color: Colors.red),
+                    ),
                   ),
                 ],
               ),
