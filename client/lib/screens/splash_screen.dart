@@ -10,13 +10,14 @@ class Splashscreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Image.asset("assets/images/logo.png", fit: BoxFit.cover)
-            .animate()
-            .blur(begin: const Offset(0, 0.1), end: const Offset(0, 0.5))
-            .fadeIn(
-              curve: Curves.easeIn,
-              duration: const Duration(milliseconds: 600),
-            ),
+        child:
+            Image.asset("assets/images/logo.png", fit: BoxFit.cover, width: 250)
+                .animate()
+                .blur(begin: const Offset(0, 0.1), end: const Offset(0, 0.5))
+                .fadeIn(
+                  curve: Curves.easeIn,
+                  duration: const Duration(milliseconds: 600),
+                ),
       ),
     );
   }
