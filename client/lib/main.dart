@@ -1,18 +1,24 @@
 import 'package:expense_tracker/db/db_helper.dart';
 import 'package:expense_tracker/models/init_shered_pref.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
+import 'package:expense_tracker/provider/image_provider.dart';
 
 import 'package:expense_tracker/provider/theme_provider.dart';
+import 'package:expense_tracker/screens/hidden_drawer.dart';
+import 'package:expense_tracker/screens/login_screen.dart';
 import 'package:expense_tracker/screens/splash_screen.dart';
+
 import 'package:expense_tracker/theme/apptheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import 'package:expense_tracker/provider/sync_provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await InitSheredPref.instance.getSharedPref();
+  await InitSheredPref.instance.getSharedPref;
   await DBHelper.instance.database;
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
@@ -20,23 +26,45 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => ImageController()),
         ChangeNotifierProvider(create: (context) => ExpenseAndIncomeChart()),
+        // Reuse the already-loaded instance — no second ThemeProvider created
+        ChangeNotifierProvider<ThemeProvider>.value(value: themeProvider),
+        ChangeNotifierProvider(create: (_) => ExpenseAndIncomeChart()),
+        ChangeNotifierProvider(
+          create: (_) {
+            final sp = SyncProvider();
+            sp.startMonitoring();
+            sp.performSync();
+            return sp;
+          },
+        ),
       ],
       child: const MyApp(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Future<String?> tokenFuture;
+  @override
+  void initState() {
+    tokenFuture = InitSheredPref.instance.getToken();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    print(width);
-    print(height);
+
     final themeProvider = Provider.of<ThemeProvider>(context);
     return ScreenUtilInit(
       designSize: Size(width, height),
@@ -56,7 +84,24 @@ class MyApp extends StatelessWidget {
             AppTheme.lightTheme.textTheme,
           ),
         ),
-        home: SafeArea(top: false, child: const Splashscreen()),
+        home: SafeArea(
+          top: false,
+          bottom: false,
+          child: FutureBuilder(
+            future: tokenFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Splashscreen();
+              }
+              final token = snapshot.data;
+
+              if (token == null) {
+                return Loginscreen();
+              }
+              return Hiddendrawer();
+            },
+          ),
+        ),
       ),
     );
   }
