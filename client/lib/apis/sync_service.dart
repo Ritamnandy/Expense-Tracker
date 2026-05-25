@@ -1,9 +1,10 @@
 import 'dart:convert';
 
+import 'package:expense_tracker/config/app_config.dart';
 import 'package:http/http.dart' as http;
 
 class SyncService {
-  static const baseUrl = "http://192.168.10.34:8080/api/v1/sync";
+  static const baseUrl = "${AppConfig.baseUrl}/sync";
 
   static Future<Map<String, dynamic>> sync({
     required String token,

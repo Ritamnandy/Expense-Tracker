@@ -1,10 +1,11 @@
 import 'dart:convert';
 
+import 'package:expense_tracker/config/app_config.dart';
 import 'package:expense_tracker/models/init_shered_pref.dart';
 import 'package:http/http.dart' as http;
 
 class AuthServices {
-  static const baseUrl = "http://192.168.10.34:8080/api/v1/auth";
+  static const baseUrl = "${AppConfig.baseUrl}/auth";
 
   static Future<Map<String, dynamic>> register({
     required String first_name,
