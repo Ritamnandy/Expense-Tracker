@@ -51,6 +51,7 @@ class _ExpensepageState extends State<Expensepage> {
 
             autovalidateMode: AutovalidateMode.onUserInteraction,
             keyboardType: TextInputType.numberWithOptions(decimal: true),
+            textInputAction: TextInputAction.next,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter amount';
@@ -140,6 +141,7 @@ class _ExpensepageState extends State<Expensepage> {
           TextFormField(
             controller: purposeController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
+            textInputAction: TextInputAction.done,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter Purpose';

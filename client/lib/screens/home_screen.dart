@@ -89,7 +89,7 @@ class _HomescreenState extends State<Homescreen> {
             await chartProvider.searchByMonth(_currentMonth);
           },
           child: Scaffold(
-            resizeToAvoidBottomInset: true,
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               leading: IconButton(
                 onPressed: () {
@@ -164,6 +164,10 @@ class _HomescreenState extends State<Homescreen> {
               ),
             ),
             body: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.viewInsetsOf(context).bottom,
+              ),
               child:
                   Column(
                     children: [
@@ -368,7 +372,7 @@ class _HomescreenState extends State<Homescreen> {
                     ],
                   ).animate().fadeIn(
                     curve: Curves.easeIn,
-                    duration: const Duration(milliseconds: 1000),
+                    duration: const Duration(milliseconds: 350),
                   ),
             ),
 

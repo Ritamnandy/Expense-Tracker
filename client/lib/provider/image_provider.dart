@@ -8,6 +8,10 @@ import 'package:path_provider/path_provider.dart';
 class ImageController extends ChangeNotifier {
   final InitSheredPref _initSheredPref = InitSheredPref.instance;
 
+  ImageController() {
+    pickImage();
+  }
+
   File? _imageFile;
 
   File? get imageFile => _imageFile;

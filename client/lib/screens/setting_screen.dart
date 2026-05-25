@@ -281,18 +281,15 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final TextEditingController _nameController = TextEditingController(
-    text: "Expense Tracker User",
-  );
-  final TextEditingController _emailController = TextEditingController(
-    text: "user@example.com",
-  );
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   String _userId = "Not available";
 
   @override
   void initState() {
     super.initState();
-    _loadUserId();
+    Provider.of<ImageController>(context, listen: false).pickImage();
+    _loadProfile();
   }
 
   @override
@@ -302,13 +299,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
-  Future<void> _loadUserId() async {
+  Future<void> _loadProfile() async {
     final userId = await InitSheredPref.instance.getUserId();
+    final name = await InitSheredPref.instance.getProfileName();
+    final email = await InitSheredPref.instance.getProfileEmail();
 
     if (!mounted) return;
 
     setState(() {
       _userId = userId ?? "Not available";
+      _nameController.text = name ?? "Expense Tracker User";
+      _emailController.text = email ?? "user@example.com";
     });
   }
 
@@ -432,8 +433,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _saveProfile() {
+  Future<void> _saveProfile() async {
     FocusScope.of(context).unfocus();
+
+    await InitSheredPref.instance.setProfileName(_nameController.text.trim());
+    await InitSheredPref.instance.setProfileEmail(_emailController.text.trim());
+
+    if (!mounted) return;
 
     ScaffoldMessenger.of(
       context,
