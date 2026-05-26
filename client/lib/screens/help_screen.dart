@@ -163,7 +163,7 @@ class _SupportContactCard extends StatelessWidget {
         trailing: IconButton(
           tooltip: "Copy email",
           onPressed: () => _copyEmail(context),
-          icon: const Icon(Icons.copy),
+          icon: Icon(Icons.copy, color: Theme.of(context).colorScheme.primary),
         ),
       ),
     );
