@@ -20,6 +20,18 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await InitSheredPref.instance.getSharedPref;
   await DBHelper.instance.database;
+
+  final lastLogoutStr = await InitSheredPref.instance.getLastLogoutDate();
+  if (lastLogoutStr != null) {
+    final lastLogout = DateTime.tryParse(lastLogoutStr);
+    if (lastLogout != null) {
+      final difference = DateTime.now().difference(lastLogout);
+      if (difference.inDays >= 60) {
+        await DBHelper.instance.clearAllData();
+        await InitSheredPref.instance.clearLastLogoutDate();
+      }
+    }
+  }
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
   runApp(
