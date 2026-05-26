@@ -195,28 +195,6 @@ class _LoginscreenState extends State<Loginscreen> {
     );
   }
 
-  void _openRegister() {
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            Registerscreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(-1.0, 0.0),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   void _showLoadingDialog(BuildContext context) {
     showDialog(
       barrierDismissible: false,
@@ -238,6 +216,28 @@ class _LoginscreenState extends State<Loginscreen> {
           ),
         );
       },
+    );
+  }
+
+  void _openRegister() {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            Registerscreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(-1.0, 0.0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            ),
+          );
+        },
+      ),
     );
   }
 

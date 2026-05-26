@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:expense_tracker/config/app_config.dart';
@@ -12,17 +13,19 @@ class SyncService {
     required List<Map<String, dynamic>> transactions,
   }) async {
     try {
-      final response = await http.post(
-        Uri.parse(baseUrl),
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $token",
-        },
-        body: jsonEncode({
-          "last_synced_at": lastSyncedAt,
-          "changes": {"transactions": transactions},
-        }),
-      ).timeout(const Duration(seconds: 15));
+      final response = await http
+          .post(
+            Uri.parse(baseUrl),
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer $token",
+            },
+            body: jsonEncode({
+              "last_synced_at": lastSyncedAt,
+              "changes": {"transactions": transactions},
+            }),
+          )
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body) as Map<String, dynamic>;
@@ -33,11 +36,20 @@ class SyncService {
         final body = jsonDecode(response.body) as Map<String, dynamic>;
         return {
           'success': false,
-          'message': body['message'] ?? 'Sync failed (HTTP ${response.statusCode})',
+          'message':
+              body['message'] ?? 'Sync failed (HTTP ${response.statusCode})',
         };
       } catch (_) {
-        return {'success': false, 'message': 'Sync failed (HTTP ${response.statusCode})'};
+        return {
+          'success': false,
+          'message': 'Sync failed (HTTP ${response.statusCode})',
+        };
       }
+    } on TimeoutException {
+      return {
+        'success': false,
+        'message': 'Sync timed out. Please try again later.',
+      };
     } catch (e) {
       return {'success': false, 'message': e.toString()};
     }
