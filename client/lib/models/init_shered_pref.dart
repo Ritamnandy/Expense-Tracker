@@ -41,9 +41,7 @@ class InitSheredPref {
   }
 
   Future<String?> getToken() async {
-    await Future.delayed(const Duration(seconds: 5));
-    String? value = _prefs?.getString("token");
-    return value;
+    return _prefs?.getString("token");
   }
 
   Future<void> logOut() async {

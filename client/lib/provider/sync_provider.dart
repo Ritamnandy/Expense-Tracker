@@ -12,7 +12,6 @@ class SyncProvider extends ChangeNotifier {
   bool get isSyncing => _isSyncing;
   String? _lastError;
   String? get lastError => _lastError;
-
   StreamSubscription? _connectivitySubscription;
 
   /// Subscribe to connectivity changes. Cancels any previous subscription first
@@ -53,6 +52,8 @@ class SyncProvider extends ChangeNotifier {
       final serverTransactions = modified.map((t) {
         return {
           'id': t.id,
+          'account_id': '00000000-0000-0000-0000-000000000000',
+          'category_id': '00000000-0000-0000-0000-000000000000',
           'amount': t.amount,
           'type': t.isExpense ? 'expense' : 'income',
           'date': '${t.date} 00:00:00',

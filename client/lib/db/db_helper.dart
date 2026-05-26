@@ -188,4 +188,10 @@ class DBHelper {
       await db.insert('transactions', data.toMap());
     }
   }
+
+  // CLEAR ALL DATA ON LOGOUT
+  Future<void> clearAllData() async {
+    final db = await instance.database;
+    await db.delete('transactions');
+  }
 }
