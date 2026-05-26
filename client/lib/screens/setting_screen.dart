@@ -177,7 +177,9 @@ class _SettingScreenState extends State<SettingScreen> {
       builder: (context) {
         return AlertDialog(
           title: const Text("Logout"),
-          content: const Text("Are you sure you want to logout?\n\nYour local data will remain on this device for 2 months. To clear it manually, use the 'Clear Data' button in settings."),
+          content: const Text(
+            "Are you sure you want to logout?\n\nYour local data will remain on this device for 2 months. To clear it manually, use the 'Clear Data' button in settings.",
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -213,7 +215,9 @@ class _SettingScreenState extends State<SettingScreen> {
       builder: (context) {
         return AlertDialog(
           title: const Text("Clear Local Data"),
-          content: const Text("Are you sure you want to permanently delete all local transactions from this device?"),
+          content: const Text(
+            "Are you sure you want to permanently delete all local transactions from this device?",
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -229,7 +233,9 @@ class _SettingScreenState extends State<SettingScreen> {
 
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Local data cleared successfully")),
+                  const SnackBar(
+                    content: Text("Local data cleared successfully"),
+                  ),
                 );
               },
               child: const Text(
@@ -355,7 +361,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     setState(() {
       _userId = userId ?? "Not available";
-      _nameController.text = name ?? "Expense Tracker User";
+      _nameController.text = name ?? "Spend Smart User";
       _emailController.text = email ?? "user@example.com";
     });
   }
@@ -366,7 +372,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final image = imageProvider.imageFile;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Profile")),
+      appBar: AppBar(
+        title: const Text("Profile"),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
         child: Column(
