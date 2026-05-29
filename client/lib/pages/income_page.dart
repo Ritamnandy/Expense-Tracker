@@ -174,9 +174,9 @@ class _IncomepageState extends State<Incomepage> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  chartProvider.addIncome(
+                  await chartProvider.addIncome(
                     purpose: purposeController.text,
                     amount: double.tryParse(amountController.text) ?? 0.0,
                     isExpense: false,

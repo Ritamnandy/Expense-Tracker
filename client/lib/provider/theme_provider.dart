@@ -1,4 +1,4 @@
-import 'package:expense_tracker/models/init_shered_pref.dart';
+import 'package:expense_tracker/models/init_shared_pref.dart';
 import 'package:flutter/material.dart';
 
 class ThemeProvider extends ChangeNotifier {

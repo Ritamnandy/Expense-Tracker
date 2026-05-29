@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:expense_tracker/db/db_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class InitSheredPref {
@@ -46,6 +47,7 @@ class InitSheredPref {
   }
 
   Future<void> logOut() async {
+    await DBHelper.instance.clearAllData();
     await _prefs?.remove("token");
     await _prefs?.remove("user_id");
     await _prefs?.remove("last_synced_at");

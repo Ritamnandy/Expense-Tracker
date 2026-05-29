@@ -4,7 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:expense_tracker/apis/sync_service.dart';
 import 'package:expense_tracker/db/db_helper.dart';
 import 'package:expense_tracker/models/chartdata.dart';
-import 'package:expense_tracker/models/init_shered_pref.dart';
+import 'package:expense_tracker/models/init_shared_pref.dart';
 import 'package:flutter/material.dart';
 
 class SyncProvider extends ChangeNotifier {
@@ -45,8 +45,9 @@ class SyncProvider extends ChangeNotifier {
       final lastSyncedAt =
           await InitSheredPref.instance.getLastSyncedAt() ?? '1970-01-01 00:00:00';
 
-      // Get locally modified records
-      final modified = await DBHelper.instance.getModifiedSince(lastSyncedAt);
+      // Get locally modified records for current user
+      final userId = await InitSheredPref.instance.getUserId();
+      final modified = await DBHelper.instance.getModifiedSince(lastSyncedAt, userId: userId);
 
       // Map client fields to server fields
       final serverTransactions = modified.map((t) {
@@ -58,6 +59,7 @@ class SyncProvider extends ChangeNotifier {
           'type': t.isExpense ? 'expense' : 'income',
           'date': '${t.date} 00:00:00',
           'note': t.purpose,
+          'currency': t.currencySymbol,
           'is_deleted': t.isDeleted,
           'updated_at': t.updatedAt,
         };
@@ -89,7 +91,7 @@ class SyncProvider extends ChangeNotifier {
               id: t['id'] as String,
               purpose: t['note'] as String? ?? '',
               amount: (t['amount'] as num).toDouble(),
-              currencySymbol: '', // preserved inside upsertFromServer if blank
+              currencySymbol: t['currency'] as String? ?? '',
               isExpense: t['type'] == 'expense',
               date: localDate,
               userId: t['user_id'] as String?,

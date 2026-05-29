@@ -24,7 +24,11 @@ The mobile app is designed to be completely usable offline. It stores all transa
 ### 🚀 Getting Started (Client)
 1. Navigate to the client directory: `cd client`
 2. Install dependencies: `flutter pub get`
-3. Update the API URL: Open `lib/config/app_config.dart` and set `baseUrl` to your production or local server IP.
+3. Configure the API URL (optional):
+	 - Default (Android Emulator): `http://10.0.2.2:8080/api/v1`
+	 - Override at build/run time:
+		 - `flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8080/api/v1`
+		 - `flutter run --dart-define=API_BASE_URL=http://192.168.x.x:8080/api/v1` (physical device, same Wi-Fi)
 4. Run the app: `flutter run`
 
 ---

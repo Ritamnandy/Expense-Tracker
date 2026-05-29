@@ -53,7 +53,7 @@ class SyncController extends BaseApiController
         if (! empty($changes['transactions'])) {
             $this->upsert($transactionModel, $changes['transactions'], $userId, [
                 'account_id', 'category_id', 'amount', 'type', 'date', 'note',
-                'is_deleted', 'synced_at',
+                'currency', 'is_deleted', 'synced_at',
             ]);
         }
 
@@ -101,6 +101,14 @@ class SyncController extends BaseApiController
                     isset($record['updated_at']) &&
                     isset($existing['updated_at']) &&
                     $record['updated_at'] <= $existing['updated_at']
+                ) {
+                    continue;
+                }
+
+                // Ensure the record belongs to this user
+                if (
+                    isset($existing['user_id']) &&
+                    $existing['user_id'] !== $userId
                 ) {
                     continue;
                 }

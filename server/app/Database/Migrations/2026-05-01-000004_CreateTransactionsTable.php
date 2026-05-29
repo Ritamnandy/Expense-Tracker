@@ -41,6 +41,11 @@ class CreateTransactionsTable extends Migration
                 'type' => 'TEXT',
                 'null' => true,
             ],
+            'currency' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 10,
+                'default'    => 'INR',
+            ],
             'is_deleted' => [
                 'type'    => 'TINYINT',
                 'default' => 0,

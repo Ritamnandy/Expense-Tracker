@@ -1,5 +1,5 @@
 import 'package:expense_tracker/db/db_helper.dart';
-import 'package:expense_tracker/models/init_shered_pref.dart';
+import 'package:expense_tracker/models/init_shared_pref.dart';
 import 'package:expense_tracker/provider/image_provider.dart';
 import 'package:expense_tracker/provider/theme_provider.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
@@ -341,7 +341,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ImageController>(context, listen: false).pickImage();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ImageController>(context, listen: false).pickImage();
+    });
     _loadProfile();
   }
 
