@@ -178,7 +178,7 @@ class _TransactionList extends StatelessWidget {
               ),
             );
           },
-          onDismissed: (_) => onDelete(item.id!),
+          onDismissed: (_) { if (item.id != null) onDelete(item.id!); },
           child: ListTile(
             subtitle: Text(formattedDate),
             leading: Container(

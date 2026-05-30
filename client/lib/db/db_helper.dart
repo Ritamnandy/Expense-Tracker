@@ -19,7 +19,7 @@ class DBHelper {
     return _dataBase!;
   }
 
-  Future<Database?> _initDB(String filePath) async {
+  Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
     return await openDatabase(
@@ -71,30 +71,41 @@ class DBHelper {
   }
 
   // READ ALL
-  Future<List<Chartdata>> getAllData() async {
+  Future<List<Chartdata>> getAllData({String? userId}) async {
     final db = await instance.database;
-    final result = await db.query('transactions');
+    final where = userId != null ? 'is_deleted = 0 AND user_id = ?' : 'is_deleted = 0';
+    final result = await db.query(
+      'transactions',
+      where: where,
+      whereArgs: userId != null ? [userId] : null,
+    );
     return result.map((e) => Chartdata.fromMap(e)).toList();
   }
 
   /// Read data by exact date — excludes soft-deleted records
-  Future<List<Chartdata>> searchByDate(String date) async {
+  Future<List<Chartdata>> searchByDate(String date, {String? userId}) async {
     final db = await instance.database;
+    final where = userId != null
+        ? 'date = ? AND is_deleted = 0 AND user_id = ?'
+        : 'date = ? AND is_deleted = 0';
     final result = await db.query(
       'transactions',
-      where: 'date = ? AND is_deleted = 0',
-      whereArgs: [date],
+      where: where,
+      whereArgs: userId != null ? [date, userId] : [date],
     );
     return result.map((e) => Chartdata.fromMap(e)).toList();
   }
 
   /// Read data by month (yyyy-MM) — excludes soft-deleted records
-  Future<List<Chartdata>> searchByMonth(String month) async {
+  Future<List<Chartdata>> searchByMonth(String month, {String? userId}) async {
     final db = await instance.database;
+    final where = userId != null
+        ? 'date LIKE ? AND is_deleted = 0 AND user_id = ?'
+        : 'date LIKE ? AND is_deleted = 0';
     final result = await db.query(
       'transactions',
-      where: 'date LIKE ? AND is_deleted = 0',
-      whereArgs: ['$month%'],
+      where: where,
+      whereArgs: userId != null ? ['$month%', userId] : ['$month%'],
     );
     return result.map((e) => Chartdata.fromMap(e)).toList();
   }
@@ -128,12 +139,15 @@ class DBHelper {
 
   // ── Sync Helpers ──────────────────────────────────────────────────────────
 
-  Future<List<Chartdata>> getModifiedSince(String since) async {
+  Future<List<Chartdata>> getModifiedSince(String since, {String? userId}) async {
     final db = await instance.database;
+    final where = userId != null
+        ? '(updated_at > ? OR synced_at IS NULL) AND user_id = ?'
+        : 'updated_at > ? OR synced_at IS NULL';
     final result = await db.query(
       'transactions',
-      where: 'updated_at > ? OR synced_at IS NULL',
-      whereArgs: [since],
+      where: where,
+      whereArgs: userId != null ? [since, userId] : [since],
     );
     return result.map((e) => Chartdata.fromMap(e)).toList();
   }

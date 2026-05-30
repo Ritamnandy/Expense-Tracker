@@ -108,7 +108,7 @@ class AccountController extends BaseApiController
             return $this->error('Account not found.', ResponseInterface::HTTP_NOT_FOUND);
         }
 
-        $this->model->update($id, ['is_deleted' => 1]);
+        $this->model->update($id, ['is_deleted' => 1, 'updated_at' => date('Y-m-d H:i:s')]);
 
         return $this->success(null, 'Account deleted.');
     }

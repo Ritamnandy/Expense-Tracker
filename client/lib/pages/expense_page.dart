@@ -179,9 +179,9 @@ class _ExpensepageState extends State<Expensepage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
               ),
-              onPressed: () {
+              onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  chartProvider.addIncome(
+                  await chartProvider.addIncome(
                     purpose: purposeController.text,
                     amount: double.tryParse(amountController.text) ?? 0.0,
                     isExpense: true,
