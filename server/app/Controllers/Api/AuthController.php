@@ -14,7 +14,7 @@ class AuthController extends BaseApiController
     {
         $rules = [
             'email'      => 'required|valid_email',
-            'password'   => 'required|min_length[6]',
+            'password'   => 'required|min_length[8]',
             'first_name' => 'permit_empty|max_length[100]',
             'last_name'  => 'permit_empty|max_length[100]',
         ];

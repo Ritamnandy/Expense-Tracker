@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:expense_tracker/config/app_config.dart';
-import 'package:expense_tracker/models/init_shered_pref.dart';
+import 'package:expense_tracker/models/init_shared_pref.dart';
 import 'package:http/http.dart' as http;
 
 class AuthServices {

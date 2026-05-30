@@ -26,7 +26,7 @@ class Homescreen extends StatefulWidget {
 class _HomescreenState extends State<Homescreen> {
   final now = DateTime.now();
   String time = '';
-  final _currentMonth = DateFormat('yyyy-MM').format(DateTime.now());
+  String get _currentMonth => DateFormat('yyyy-MM').format(DateTime.now());
   String? _selectedDate;
 
   @override
@@ -541,7 +541,7 @@ class _RecentTransactionList extends StatelessWidget {
               ),
             );
           },
-          onDismissed: (_) => onDelete(item.id!),
+          onDismissed: (_) { if (item.id != null) onDelete(item.id!); },
           child: ListTile(
             subtitle: Text(formattedDate),
             leading: Container(

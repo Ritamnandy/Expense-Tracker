@@ -39,16 +39,16 @@ class Chartdata {
 
   factory Chartdata.fromMap(Map<String, dynamic> map) {
     return Chartdata(
-      id: map['id'],
-      purpose: map['purpose'] ?? 'Unknown',
-      amount: map['amount'],
-      currencySymbol: map['currencySymbol'],
-      isExpense: map['isExpense'] == 1,
-      date: map['date'],
-      userId: map['user_id'],
-      isDeleted: map['is_deleted'] ?? 0,
-      updatedAt: map['updated_at'],
-      syncedAt: map['synced_at'],
+      id: map['id'] as String?,
+      purpose: map['purpose'] as String? ?? 'Unknown',
+      amount: (map['amount'] as num?)?.toDouble() ?? 0.0,
+      currencySymbol: map['currencySymbol'] as String? ?? '',
+      isExpense: (map['isExpense'] as int?) == 1,
+      date: map['date'] as String? ?? '',
+      userId: map['user_id'] as String?,
+      isDeleted: map['is_deleted'] as int? ?? 0,
+      updatedAt: map['updated_at'] as String?,
+      syncedAt: map['synced_at'] as String?,
     );
   }
 }

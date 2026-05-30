@@ -1,6 +1,6 @@
 import 'package:expense_tracker/db/db_helper.dart';
 import 'package:expense_tracker/models/chartdata.dart';
-import 'package:expense_tracker/models/init_shered_pref.dart';
+import 'package:expense_tracker/models/init_shared_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -24,14 +24,14 @@ class ExpenseAndIncomeChart extends ChangeNotifier {
 
   // READ ALL
   Future<void> loadData() async {
-    _list = await DBHelper.instance.getAllData();
+    _list = await DBHelper.instance.getAllData(userId: await _userId());
     notifyListeners();
   }
 
   /// Insert a new income or expense.
   /// Only appends to [_list] if the new item belongs to the active month filter,
   /// so viewing a past month doesn't get polluted with today's new entries.
-  void addIncome({
+  Future<void> addIncome({
     required String purpose,
     required double amount,
     required String currencySymbol,
@@ -64,14 +64,14 @@ class ExpenseAndIncomeChart extends ChangeNotifier {
 
   // SEARCH BY DATE
   Future<void> searchByDate(String date) async {
-    final data = await DBHelper.instance.searchByDate(date);
+    final data = await DBHelper.instance.searchByDate(date, userId: await _userId());
     _list = data;
     notifyListeners();
   }
 
   Future<void> searchByMonth(String month) async {
     _currentMonth = month;
-    final data = await DBHelper.instance.searchByMonth(month);
+    final data = await DBHelper.instance.searchByMonth(month, userId: await _userId());
     _list = data;
     notifyListeners();
   }
