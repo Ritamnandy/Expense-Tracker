@@ -53,8 +53,8 @@ class SyncProvider extends ChangeNotifier {
       final serverTransactions = modified.map((t) {
         return {
           'id': t.id,
-          'account_id': '00000000-0000-0000-0000-000000000000',
-          'category_id': '00000000-0000-0000-0000-000000000000',
+          'account_id': null,
+          'category_id': null,
           'amount': t.amount,
           'type': t.isExpense ? 'expense' : 'income',
           'date': '${t.date} 00:00:00',
@@ -81,7 +81,7 @@ class SyncProvider extends ChangeNotifier {
         for (final txn in txns) {
           final t = txn as Map<String, dynamic>;
           if ((t['is_deleted'] ?? 0) == 1) {
-            await DBHelper.instance.deleteData(t['id'] as String);
+            await DBHelper.instance.hardDelete(t['id'] as String);
           } else {
             final serverDate = (t['date'] as String?) ?? '';
             final localDate = serverDate.length >= 10
