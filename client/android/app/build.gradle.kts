@@ -31,9 +31,9 @@ android {
     }
 
     buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-        }
+    release {
+        signingConfig = signingConfigs.getByName("debug")
+    }
     }
 }
 

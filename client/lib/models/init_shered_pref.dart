@@ -27,6 +27,7 @@ class InitSheredPref {
   Future<void> setToken(String token) async {
     await _prefs?.remove("token");
     await _prefs?.setString("token", token);
+    await clearLastLogoutDate();
     // Extract user_id from JWT payload
     try {
       final parts = token.split('.');
@@ -48,6 +49,7 @@ class InitSheredPref {
     await _prefs?.remove("token");
     await _prefs?.remove("user_id");
     await _prefs?.remove("last_synced_at");
+    await setLastLogoutDate();
   }
 
   /// set and get user id
@@ -95,5 +97,21 @@ class InitSheredPref {
 
   Future<String?> getProfileEmail() async {
     return _prefs?.getString("profile_email");
+  }
+
+  /// set and get last logout date
+  Future<void> setLastLogoutDate() async {
+    await _prefs?.setString(
+      "last_logout_date",
+      DateTime.now().toIso8601String(),
+    );
+  }
+
+  Future<String?> getLastLogoutDate() async {
+    return _prefs?.getString("last_logout_date");
+  }
+
+  Future<void> clearLastLogoutDate() async {
+    await _prefs?.remove("last_logout_date");
   }
 }
