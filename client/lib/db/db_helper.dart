@@ -166,6 +166,16 @@ class DBHelper {
     await batch.commit(noResult: true);
   }
 
+  // HARD DELETE BY ID
+  Future<int> hardDelete(String id) async {
+    final db = await instance.database;
+    return await db.delete(
+      'transactions',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   // HARD DELETE: clean up soft-deleted records after sync confirmed
   Future<int> purgeDeleted() async {
     final db = await instance.database;
