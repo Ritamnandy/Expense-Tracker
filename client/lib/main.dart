@@ -2,19 +2,18 @@ import 'package:expense_tracker/db/db_helper.dart';
 import 'package:expense_tracker/models/init_shared_pref.dart';
 import 'package:expense_tracker/provider/add_expense_chart.dart';
 import 'package:expense_tracker/provider/image_provider.dart';
-
 import 'package:expense_tracker/provider/theme_provider.dart';
 import 'package:expense_tracker/screens/hidden_drawer.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
 import 'package:expense_tracker/screens/splash_screen.dart';
-
 import 'package:expense_tracker/theme/apptheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
 import 'package:expense_tracker/provider/sync_provider.dart';
+
+const Duration startupTimeout = Duration(seconds: 8);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,15 +65,20 @@ class _MyAppState extends State<MyApp> {
   late Future<String?> tokenFuture;
   @override
   void initState() {
-    tokenFuture = InitSheredPref.instance.getToken();
+    tokenFuture = InitSheredPref.instance.getToken().timeout(
+      startupTimeout,
+      onTimeout: () => null,
+    );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return ScreenUtilInit(
-      designSize: const Size(390, 844),
+      designSize:  Size(width, height),
       minTextAdapt: true,
       splitScreenMode: true,
       child: MaterialApp(
@@ -99,6 +103,9 @@ class _MyAppState extends State<MyApp> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Splashscreen();
+              }
+              if (snapshot.hasError) {
+                return Loginscreen();
               }
               final token = snapshot.data;
 

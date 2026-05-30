@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:expense_tracker/config/app_config.dart';
@@ -32,14 +33,21 @@ class AuthServices {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
         final token = data['data']?['token'] as String?;
         if (token != null) await InitSheredPref.instance.setToken(token);
-        
+
         await InitSheredPref.instance.setProfileEmail(email);
-        await InitSheredPref.instance.setProfileName('$first_name $last_name'.trim());
+        await InitSheredPref.instance.setProfileName(
+          '$first_name $last_name'.trim(),
+        );
 
         return data;
       } else {
         return jsonDecode(response.body) as Map<String, dynamic>;
       }
+    } on TimeoutException {
+      return {
+        'success': false,
+        'message': 'Server is taking too long. Please try again later.',
+      };
     } catch (e) {
       return {'success': false, 'message': e.toString()};
     }
@@ -63,7 +71,7 @@ class AuthServices {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
         final token = data['data']?['token'] as String?;
         if (token != null) await InitSheredPref.instance.setToken(token);
-        
+
         final user = data['data']?['user'] as Map<String, dynamic>?;
         if (user != null) {
           final userEmail = user['email'] as String?;
@@ -71,14 +79,21 @@ class AuthServices {
           final lastName = user['last_name'] as String?;
           final name = '${firstName ?? ""} ${lastName ?? ""}'.trim();
 
-          if (userEmail != null) await InitSheredPref.instance.setProfileEmail(userEmail);
-          if (name.isNotEmpty) await InitSheredPref.instance.setProfileName(name);
+          if (userEmail != null)
+            await InitSheredPref.instance.setProfileEmail(userEmail);
+          if (name.isNotEmpty)
+            await InitSheredPref.instance.setProfileName(name);
         }
 
         return data;
       } else {
         return jsonDecode(response.body) as Map<String, dynamic>;
       }
+    } on TimeoutException {
+      return {
+        'success': false,
+        'message': 'Server is taking too long. Please try again later.',
+      };
     } catch (e) {
       return {'success': false, 'message': e.toString()};
     }
