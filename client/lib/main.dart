@@ -75,8 +75,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return ScreenUtilInit(
-      designSize: const Size(390, 844),
+      designSize:  Size(width, height),
       minTextAdapt: true,
       splitScreenMode: true,
       child: MaterialApp(
