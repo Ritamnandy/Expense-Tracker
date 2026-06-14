@@ -5,7 +5,6 @@ import 'package:expense_tracker/provider/image_provider.dart';
 import 'package:expense_tracker/provider/theme_provider.dart';
 import 'package:expense_tracker/screens/hidden_drawer.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
-import 'package:expense_tracker/screens/otp_screen.dart';
 import 'package:expense_tracker/screens/splash_screen.dart';
 import 'package:expense_tracker/theme/apptheme.dart';
 import 'package:flutter/material.dart';
@@ -111,7 +110,7 @@ class _MyAppState extends State<MyApp> {
               final token = snapshot.data;
 
               if (token == null) {
-                return OtpScreen(email: "Ritam23@gmail.com");
+                return Hiddendrawer();
               }
               return Hiddendrawer();
             },

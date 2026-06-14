@@ -102,7 +102,7 @@ class AuthServices {
   static Future<Map<String, dynamic>> getVerification(String otp) async {
     await Future.delayed(const Duration(seconds: 3));
     try {
-      const code = "902321";
+      const code = "123456"; // Simulated OTP for testing
       if (otp == code) {
         return {'success': true, 'message': 'OTP verified successfully.'};
       } else {
