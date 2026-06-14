@@ -1,7 +1,7 @@
 import 'package:expense_tracker/apis/auth_services.dart';
 import 'package:expense_tracker/core/validators/validator.dart';
-import 'package:expense_tracker/screens/hidden_drawer.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
+import 'package:expense_tracker/screens/otp_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -205,7 +205,7 @@ class _RegisterscreenState extends State<Registerscreen> {
 
     Navigator.pop(context);
     if (success['success'] == true) {
-      _nextScreen();
+      _nextScreen(email);
     } else {
       _showerror(
         success['message'] ?? success['error'] ?? 'Registration failed',
@@ -242,12 +242,12 @@ class _RegisterscreenState extends State<Registerscreen> {
     );
   }
 
-  void _nextScreen() {
+  void _nextScreen(String email) {
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) {
-          return Hiddendrawer();
+          return OtpScreen(email: email.trim());
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           final curved = CurvedAnimation(parent: animation, curve: Curves.ease);
