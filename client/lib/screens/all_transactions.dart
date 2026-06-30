@@ -19,6 +19,7 @@ class AllTransaction extends StatefulWidget {
 class _AllTransactionState extends State<AllTransaction> {
   String currentMonth = DateFormat('yyyy-MM').format(DateTime.now());
   String formattedDate = DateFormat('MMMM yyyy').format(DateTime.now());
+  bool showIncomeSummary = false;
 
   @override
   void initState() {
@@ -48,6 +49,10 @@ class _AllTransactionState extends State<AllTransaction> {
   @override
   Widget build(BuildContext context) {
     final chartProvider = Provider.of<ExpenseAndIncomeChart>(context);
+    final previousMonthIncome = _totalIncome(chartProvider.previousMonthList);
+    final previousMonthExpense = _totalExpense(chartProvider.previousMonthList);
+    final previousMonth = _previousMonthLabel(currentMonth);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -92,6 +97,21 @@ class _AllTransactionState extends State<AllTransaction> {
                 ),
                 const SizedBox(height: 5),
 
+                _MonthlySummary(
+                  currencySymbol: widget.currencySymbol,
+                  previousMonthLabel: previousMonth,
+                  previousMonthIncome: previousMonthIncome,
+                  previousMonthExpense: previousMonthExpense,
+                  isExpanded: showIncomeSummary,
+                  onToggle: () {
+                    setState(() {
+                      showIncomeSummary = !showIncomeSummary;
+                    });
+                  },
+                ),
+
+                const SizedBox(height: 5),
+
                 chartProvider.list.isEmpty
                     ? Center(
                         child: Text(
@@ -117,6 +137,168 @@ class _AllTransactionState extends State<AllTransaction> {
       ),
     );
   }
+
+  double _totalIncome(List<Chartdata> list) {
+    return list
+        .where((element) => element.isExpense == false)
+        .fold(0.0, (previousValue, element) => previousValue + element.amount);
+  }
+
+  double _totalExpense(List<Chartdata> list) {
+    return list
+        .where((element) => element.isExpense == true)
+        .fold(0.0, (previousValue, element) => previousValue + element.amount);
+  }
+
+  String _previousMonthLabel(String month) {
+    final selected = DateFormat('yyyy-MM').parse(month);
+    return DateFormat(
+      'MMMM yyyy',
+    ).format(DateTime(selected.year, selected.month - 1));
+  }
+}
+
+class _MonthlySummary extends StatelessWidget {
+  final String currencySymbol;
+  final String previousMonthLabel;
+  final double previousMonthIncome;
+  final double previousMonthExpense;
+  final bool isExpanded;
+  final VoidCallback onToggle;
+
+  const _MonthlySummary({
+    required this.currencySymbol,
+    required this.previousMonthLabel,
+    required this.previousMonthIncome,
+    required this.previousMonthExpense,
+    required this.isExpanded,
+    required this.onToggle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Material(
+        color: Theme.of(context).inputDecorationTheme.fillColor,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: onToggle,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Previous Month Summary',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    AnimatedRotation(
+                      turns: isExpanded ? 0.5 : 0,
+                      duration: const Duration(milliseconds: 200),
+                      child: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                ),
+                AnimatedCrossFade(
+                  firstChild: const SizedBox.shrink(),
+                  secondChild: Padding(
+                    padding: const EdgeInsets.only(top: 14),
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            previousMonthLabel,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        _SummaryAmountRow(
+                          icon: Icons.arrow_upward,
+                          color: Theme.of(context).colorScheme.primary,
+                          label: 'Income',
+                          amount:
+                              '$currencySymbol ${previousMonthIncome.toStringAsFixed(2)}',
+                        ),
+                        const SizedBox(height: 10),
+                        _SummaryAmountRow(
+                          icon: Icons.arrow_downward,
+                          color: Theme.of(context).colorScheme.secondary,
+                          label: 'Expense',
+                          amount:
+                              '$currencySymbol ${previousMonthExpense.toStringAsFixed(2)}',
+                        ),
+                      ],
+                    ),
+                  ),
+                  crossFadeState: isExpanded
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+                  duration: const Duration(milliseconds: 200),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SummaryAmountRow extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String label;
+  final String amount;
+
+  const _SummaryAmountRow({
+    required this.icon,
+    required this.color,
+    required this.label,
+    required this.amount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          height: 32,
+          width: 32,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, size: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+          ),
+        ),
+        Text(
+          amount,
+          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+        ),
+      ],
+    );
+  }
 }
 
 class _TransactionList extends StatelessWidget {
@@ -132,7 +314,7 @@ class _TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sortedList = [...list]..sort((a, b) => b.date.compareTo(a.date));
+    final sortedList = [...list]..sort(_sortNewestFirst);
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -178,7 +360,9 @@ class _TransactionList extends StatelessWidget {
               ),
             );
           },
-          onDismissed: (_) { if (item.id != null) onDelete(item.id!); },
+          onDismissed: (_) {
+            if (item.id != null) onDelete(item.id!);
+          },
           child: ListTile(
             subtitle: Text(formattedDate),
             leading: Container(
@@ -207,5 +391,18 @@ class _TransactionList extends StatelessWidget {
         );
       },
     );
+  }
+
+  int _sortNewestFirst(Chartdata a, Chartdata b) {
+    final dateCompare = b.date.compareTo(a.date);
+    if (dateCompare != 0) return dateCompare;
+
+    final aTime = DateTime.tryParse(a.updatedAt ?? '');
+    final bTime = DateTime.tryParse(b.updatedAt ?? '');
+    if (aTime == null && bTime == null) return 0;
+    if (aTime == null) return 1;
+    if (bTime == null) return -1;
+
+    return bTime.compareTo(aTime);
   }
 }

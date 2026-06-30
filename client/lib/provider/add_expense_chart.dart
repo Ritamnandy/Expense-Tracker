@@ -7,9 +7,12 @@ import 'package:uuid/uuid.dart';
 class ExpenseAndIncomeChart extends ChangeNotifier {
   List<Chartdata> _list = [];
   List<Chartdata> get list => _list;
+  List<Chartdata> _previousMonthList = [];
+  List<Chartdata> get previousMonthList => _previousMonthList;
 
   /// Tracks the last month filter so addIncome knows whether to append.
   String? _currentMonth;
+  String? get currentMonth => _currentMonth;
 
   Future<String?> _userId() async {
     return await InitSheredPref.instance.getUserId();
@@ -24,7 +27,8 @@ class ExpenseAndIncomeChart extends ChangeNotifier {
 
   // READ ALL
   Future<void> loadData() async {
-    _list = await DBHelper.instance.getAllData(userId: await _userId());
+    final userId = await _userId();
+    _list = await DBHelper.instance.getAllData(userId: userId);
     notifyListeners();
   }
 
@@ -65,15 +69,23 @@ class ExpenseAndIncomeChart extends ChangeNotifier {
 
   // SEARCH BY DATE
   Future<void> searchByDate(String date) async {
-    final data = await DBHelper.instance.searchByDate(date, userId: await _userId());
+    final userId = await _userId();
+    final data = await DBHelper.instance.searchByDate(date, userId: userId);
     _list = data;
     notifyListeners();
   }
 
   Future<void> searchByMonth(String month) async {
     _currentMonth = month;
-    final data = await DBHelper.instance.searchByMonth(month, userId: await _userId());
+    final userId = await _userId();
+    final data = await DBHelper.instance.searchByMonth(month, userId: userId);
+    final previousMonth = _previousMonth(month);
+    final previousData = await DBHelper.instance.searchByMonth(
+      previousMonth,
+      userId: userId,
+    );
     _list = data;
+    _previousMonthList = previousData;
     notifyListeners();
   }
 
@@ -81,6 +93,19 @@ class ExpenseAndIncomeChart extends ChangeNotifier {
   Future<void> deleteItem(String id) async {
     await DBHelper.instance.deleteData(id);
     _list.removeWhere((e) => e.id == id);
+    _previousMonthList.removeWhere((e) => e.id == id);
     notifyListeners();
+  }
+
+  String _previousMonth(String month) {
+    final parts = month.split('-');
+    if (parts.length != 2) return month;
+
+    final year = int.tryParse(parts[0]);
+    final monthNumber = int.tryParse(parts[1]);
+    if (year == null || monthNumber == null) return month;
+
+    final previous = DateTime(year, monthNumber - 1);
+    return '${previous.year}-${_pad(previous.month)}';
   }
 }

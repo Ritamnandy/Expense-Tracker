@@ -27,7 +27,7 @@ class _HomescreenState extends State<Homescreen> {
   final now = DateTime.now();
   DateTime selectedDate = DateTime.now();
   String time = '';
-  String get _currentMonth => DateFormat('yyyy-MM').format(DateTime.now());
+  String get _currentMonth => DateFormat('yyyy-MM').format(selectedDate);
 
   @override
   void initState() {
@@ -43,7 +43,10 @@ class _HomescreenState extends State<Homescreen> {
     final imageProvider = Provider.of<ImageController>(context);
     final image = imageProvider.imageFile;
     final chartProvider = Provider.of<ExpenseAndIncomeChart>(context);
-    final list = chartProvider.list;
+    final activeMonth = chartProvider.currentMonth ?? _currentMonth;
+    final list = chartProvider.list
+        .where((item) => item.date.startsWith(activeMonth))
+        .toList();
 
     final totalIncome = list.isEmpty
         ? 0.00
@@ -63,9 +66,7 @@ class _HomescreenState extends State<Homescreen> {
                 (previousValue, element) => previousValue + element.amount,
               );
 
-    final currencySymbol = chartProvider.list.isNotEmpty
-        ? chartProvider.list.first.currencySymbol
-        : '₹';
+    final currencySymbol = list.isNotEmpty ? list.first.currencySymbol : '₹';
 
     final safeToSpend = totalIncome - totalExpense;
     final safeToSpendPercentage = totalIncome > 0
@@ -82,8 +83,10 @@ class _HomescreenState extends State<Homescreen> {
           displacement: 100,
           strokeWidth: 3,
           onRefresh: () async {
+            final today = DateTime.now();
             setState(() {
-              time = DateFormat('dd MMM yyyy').format(now);
+              selectedDate = today;
+              time = DateFormat('dd MMM yyyy').format(today);
             });
             await chartProvider.searchByMonth(_currentMonth);
           },
@@ -374,7 +377,7 @@ class _HomescreenState extends State<Homescreen> {
 
                       // Recent list with swipe-to-delete
                       _RecentTransactionList(
-                        list: chartProvider.list,
+                        list: list,
                         currencySymbol: currencySymbol,
                         onDelete: (id) => context
                             .read<ExpenseAndIncomeChart>()
@@ -398,7 +401,7 @@ class _HomescreenState extends State<Homescreen> {
       context: context,
       firstDate: DateTime(1980),
       lastDate: DateTime(2200),
-      initialDate: DateTime.now(),
+      initialDate: selectedDate,
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -428,6 +431,11 @@ class _HomescreenState extends State<Homescreen> {
         selectedDate = datetime;
         time = DateFormat('dd MMM yyyy').format(datetime);
       });
+      if (context.mounted) {
+        await context.read<ExpenseAndIncomeChart>().searchByMonth(
+          _currentMonth,
+        );
+      }
     }
   }
 
@@ -452,11 +460,28 @@ class _HomescreenState extends State<Homescreen> {
     );
     // Restore home screen state when returning
     if (mounted) {
+      final activeMonth = context.read<ExpenseAndIncomeChart>().currentMonth;
+      final monthDate = activeMonth != null
+          ? _dateInMonth(activeMonth, selectedDate)
+          : selectedDate;
       setState(() {
-        time = DateFormat('dd MMM yyyy').format(now);
+        selectedDate = monthDate;
+        time = DateFormat('dd MMM yyyy').format(monthDate);
       });
       await context.read<ExpenseAndIncomeChart>().searchByMonth(_currentMonth);
     }
+  }
+
+  DateTime _dateInMonth(String month, DateTime currentDate) {
+    final parsedMonth = DateFormat('yyyy-MM').parse(month);
+    final daysInMonth = DateTime(
+      parsedMonth.year,
+      parsedMonth.month + 1,
+      0,
+    ).day;
+    final day = currentDate.day.clamp(1, daysInMonth);
+
+    return DateTime(parsedMonth.year, parsedMonth.month, day);
   }
 }
 
@@ -573,13 +598,15 @@ class _RecentTransactionList extends StatelessWidget {
   }
 
   int _sortNewestFirst(Chartdata a, Chartdata b) {
-    final bDate = DateTime.tryParse(b.updatedAt ?? b.date);
-    final aDate = DateTime.tryParse(a.updatedAt ?? a.date);
+    final dateCompare = b.date.compareTo(a.date);
+    if (dateCompare != 0) return dateCompare;
 
-    if (aDate == null && bDate == null) return b.date.compareTo(a.date);
-    if (aDate == null) return 1;
-    if (bDate == null) return -1;
+    final aTime = DateTime.tryParse(a.updatedAt ?? '');
+    final bTime = DateTime.tryParse(b.updatedAt ?? '');
+    if (aTime == null && bTime == null) return 0;
+    if (aTime == null) return 1;
+    if (bTime == null) return -1;
 
-    return bDate.compareTo(aDate);
+    return bTime.compareTo(aTime);
   }
 }

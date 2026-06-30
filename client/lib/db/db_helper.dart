@@ -73,7 +73,9 @@ class DBHelper {
   // READ ALL
   Future<List<Chartdata>> getAllData({String? userId}) async {
     final db = await instance.database;
-    final where = userId != null ? 'is_deleted = 0 AND user_id = ?' : 'is_deleted = 0';
+    final where = userId != null
+        ? 'is_deleted = 0 AND user_id = ?'
+        : 'is_deleted = 0';
     final result = await db.query(
       'transactions',
       where: where,
@@ -139,7 +141,10 @@ class DBHelper {
 
   // ── Sync Helpers ──────────────────────────────────────────────────────────
 
-  Future<List<Chartdata>> getModifiedSince(String since, {String? userId}) async {
+  Future<List<Chartdata>> getModifiedSince(
+    String since, {
+    String? userId,
+  }) async {
     final db = await instance.database;
     final where = userId != null
         ? '(updated_at > ? OR synced_at IS NULL) AND user_id = ?'
@@ -169,11 +174,7 @@ class DBHelper {
   // HARD DELETE BY ID
   Future<int> hardDelete(String id) async {
     final db = await instance.database;
-    return await db.delete(
-      'transactions',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete('transactions', where: 'id = ?', whereArgs: [id]);
   }
 
   // HARD DELETE: clean up soft-deleted records after sync confirmed
